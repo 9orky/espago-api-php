@@ -2,7 +2,7 @@
 
 namespace Gorky\Espago\Api\Response;
 
-use Gorky\Espago\Model\Token;
+use Gorky\Espago\Value\Token;
 
 class GetTokenResponse
 {

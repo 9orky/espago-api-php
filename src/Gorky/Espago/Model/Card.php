@@ -41,7 +41,6 @@ class Card
     private $createdAt;
 
     /**
-     * Card constructor.
      * @param $company
      * @param $number
      * @param $firstName

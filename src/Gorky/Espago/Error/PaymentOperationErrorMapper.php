@@ -4,9 +4,8 @@ namespace Gorky\Espago\Error;
 
 use Gorky\Espago\Exception\EspagoApiUndefinedErrorException;
 
-class ErrorMapper
+class PaymentOperationErrorMapper
 {
-
     const DEFAULT_ERROR_MESSAGE = 'Your payment could no be processed. Please try again.';
 
     /**
@@ -130,14 +129,14 @@ class ErrorMapper
 
     /**
      * @param $errorCode
-     * @return TransactionError
+     * @return PaymentOperationError
      * @throws EspagoApiUndefinedErrorException
      */
-    public function getErrorByCode($errorCode)
+    public static function getErrorByCode($errorCode)
     {
         foreach (self::$mapping as $error) {
             if (in_array($errorCode, $error['codes'])) {
-                return new TransactionError($errorCode, $error['sys-msg'], $error['message']);
+                return new PaymentOperationError($errorCode, $error['sys-msg'], $error['message']);
             }
         }
 

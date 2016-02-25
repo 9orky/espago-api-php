@@ -2,9 +2,8 @@
 
 namespace Gorky\Espago\Error;
 
-class TransactionError 
+class PaymentOperationError
 {
-
     /**
      * @var
      */

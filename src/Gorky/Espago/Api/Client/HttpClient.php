@@ -14,6 +14,10 @@ use GuzzleHttp\Exception\ServerException;
 
 class HttpClient
 {
+    /**
+     * @var
+     */
+    private $apiUrl;
 
     /**
      * @var Client
@@ -21,18 +25,17 @@ class HttpClient
     private $client;
 
     /**
-     * @param $espagoApiUrl
+     * @param string $apiUrl
      */
-    public function __construct($espagoApiUrl)
+    public function __construct($apiUrl)
     {
-        $this->client = new Client([
-            'base_url' => $espagoApiUrl
-        ]);
+        $this->apiUrl = $apiUrl;
+        $this->client = new Client();
     }
 
     /**
      * @param HttpCall $httpCall
-     * @return \GuzzleHttp\Message\ResponseInterface
+     * @return array
      * @throws ApiHttpCallUnsupportedMethodException
      * @throws EspagoApiBadRequestException
      * @throws EspagoApiUnavailableException
@@ -45,9 +48,7 @@ class HttpClient
         }
 
         try {
-
             switch ($httpCall->getMethod()) {
-
                 case HttpCall::METHOD_GET:
                     return $this->get($httpCall)->json();
 
@@ -59,9 +60,7 @@ class HttpClient
 
                 case HttpCall::METHOD_DELETE:
                     return $this->delete($httpCall)->json();
-
             }
-
         } catch (ConnectException $e) {
             throw new NetworkConnectionException('Espago API is unreachable. Debug network and check if API is online');
         } catch (ClientException $e) {
@@ -83,50 +82,58 @@ class HttpClient
 
     /**
      * @param HttpCall $httpCall
-     * @return \GuzzleHttp\Message\FutureResponse|\GuzzleHttp\Message\ResponseInterface|\GuzzleHttp\Ring\Future\FutureInterface|null
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function get(HttpCall $httpCall)
     {
-        return $this->client->get($httpCall->getUrl(), [
-            'auth'    => [$httpCall->getAppId(), $httpCall->getPassword()],
+        $url = sprintf('%s%s', $this->apiUrl, $httpCall->getUrl());
+
+        return $this->client->get($url, [
+            'auth'    => [$httpCall->getHttpAuthUsername(), $httpCall->getHttpAuthPassword()],
             'headers' => $httpCall->getHeaders()
         ]);
     }
 
     /**
      * @param HttpCall $httpCall
-     * @return \GuzzleHttp\Message\FutureResponse|\GuzzleHttp\Message\ResponseInterface|\GuzzleHttp\Ring\Future\FutureInterface|null
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function post(HttpCall $httpCall)
     {
-        return $this->client->post($httpCall->getUrl(), [
-            'auth'    => [$httpCall->getAppId(), $httpCall->getPassword()],
-            'body'    => $httpCall->getFormData(),
-            'headers' => $httpCall->getHeaders()
+        $url = sprintf('%s%s', $this->apiUrl, $httpCall->getUrl());
+
+        return $this->client->post($url, [
+            'auth'        => [$httpCall->getHttpAuthUsername(), $httpCall->getHttpAuthPassword()],
+            'form_params' => $httpCall->getFormData(),
+            'headers'     => $httpCall->getHeaders()
         ]);
     }
 
     /**
      * @param HttpCall $httpCall
-     * @return \GuzzleHttp\Message\FutureResponse|\GuzzleHttp\Message\ResponseInterface|\GuzzleHttp\Ring\Future\FutureInterface|null
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function put(HttpCall $httpCall)
     {
-        return $this->client->put($httpCall->getUrl(), [
-            'auth'    => [$httpCall->getAppId(), $httpCall->getPassword()],
-            'body'    => $httpCall->getFormData(),
-            'headers' => $httpCall->getHeaders()
+        $url = sprintf('%s%s', $this->apiUrl, $httpCall->getUrl());
+
+        return $this->client->put($url, [
+            'auth'        => [$httpCall->getHttpAuthUsername(), $httpCall->getHttpAuthPassword()],
+            'form_params' => $httpCall->getFormData(),
+            'headers'     => $httpCall->getHeaders()
         ]);
     }
 
     /**
      * @param HttpCall $httpCall
-     * @return \GuzzleHttp\Message\FutureResponse|\GuzzleHttp\Message\ResponseInterface|\GuzzleHttp\Ring\Future\FutureInterface|null
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function delete(HttpCall $httpCall)
     {
-        return $this->client->delete($httpCall->getUrl(), [
-            'auth'    => [$httpCall->getAppId(), $httpCall->getPassword()],
+        $url = sprintf('%s%s', $this->apiUrl, $httpCall->getUrl());
+
+        return $this->client->delete($url, [
+            'auth'    => [$httpCall->getHttpAuthUsername(), $httpCall->getHttpAuthPassword()],
             'headers' => $httpCall->getHeaders()
         ]);
     }

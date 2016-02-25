@@ -6,7 +6,6 @@ use Gorky\Espago\Exception\ApiHttpCallHeaderExistsException;
 
 class HttpCall
 {
-
     const METHOD_GET    = 'GET';
     const METHOD_POST   = 'POST';
     const METHOD_PUT    = 'PUT';
@@ -15,12 +14,12 @@ class HttpCall
     /**
      * @var
      */
-    private $appId;
+    private $httpAuthUsername;
 
     /**
      * @var
      */
-    private $password;
+    private $httpAuthPassword;
 
     /**
      * @var
@@ -43,17 +42,18 @@ class HttpCall
     private $formData;
 
     /**
+     * HttpCall constructor.
      * @param $url
      * @param $method
-     * @param $appId
-     * @param $password
+     * @param $httpAuthUsername
+     * @param $httpAuthPassword
      */
-    public function __construct($url, $method, $appId, $password)
+    public function __construct($url, $method, $httpAuthUsername, $httpAuthPassword)
     {
-        $this->url      = $url;
-        $this->method   = $method;
-        $this->appId    = $appId;
-        $this->password = $password;
+        $this->url              = $url;
+        $this->method           = $method;
+        $this->httpAuthUsername = $httpAuthUsername;
+        $this->httpAuthPassword = $httpAuthPassword;
 
         $this->headers = ['Accept' => 'application/vnd.espago.v3+json'];
     }
@@ -113,17 +113,17 @@ class HttpCall
     /**
      * @return mixed
      */
-    public function getAppId()
+    public function getHttpAuthUsername()
     {
-        return $this->appId;
+        return $this->httpAuthUsername;
     }
 
     /**
      * @return mixed
      */
-    public function getPassword()
+    public function getHttpAuthPassword()
     {
-        return $this->password;
+        return $this->httpAuthPassword;
     }
 
     /**
