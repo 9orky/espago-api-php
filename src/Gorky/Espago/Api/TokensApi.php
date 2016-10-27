@@ -6,11 +6,30 @@ use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Exception\Api\ServiceUnavailableException;
 use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
 use Gorky\Espago\Exception\NetworkConnectionException;
+use Gorky\Espago\Factory\HttpCallFactory;
+use Gorky\Espago\Handler\TokenResponseHandler;
+use Gorky\Espago\Http\HttpClient;
 use Gorky\Espago\Value\Token;
 use Gorky\Espago\Model\UnauthorizedCard;
 
 class TokensApi extends AbstractApi
 {
+    /**
+     * @param HttpClient $httpClient
+     * @param HttpCallFactory $httpCallFactory
+     * @param TokenResponseHandler $tokenResponseHandler
+     */
+    public function __construct(
+        HttpClient $httpClient,
+        HttpCallFactory $httpCallFactory,
+        TokenResponseHandler $tokenResponseHandler
+    )
+    {
+        parent::__construct($httpClient, $httpCallFactory);
+
+        $this->responseHandler = $tokenResponseHandler;
+    }
+
     /**
      * @param string $number
      * @param string $firstName
@@ -45,7 +64,7 @@ class TokensApi extends AbstractApi
      */
     public function createToken(UnauthorizedCard $unauthorizedCard)
     {
-        $response = $this->httpClient->makeCall(
+        $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPostCallAuthorizedWithPublicKey(
                 '/api/tokens',
                 [
@@ -59,7 +78,7 @@ class TokensApi extends AbstractApi
             )
         );
         
-        return new Token($response['id']);
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
@@ -73,12 +92,12 @@ class TokensApi extends AbstractApi
      */
     public function getToken($token)
     {
-        $response = $this->httpClient->makeCall(
+        $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildGetCall(
                 sprintf('/api/tokens/%s', $token)
             )
         );
-        
-        return new Token($response['id']);
+
+        return $this->responseHandler->handle($apiResponse);
     }
 }

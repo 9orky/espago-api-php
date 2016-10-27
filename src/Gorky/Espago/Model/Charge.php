@@ -1,11 +1,48 @@
 <?php
 
-namespace Gorky\Espago\Response;
+namespace Gorky\Espago\Model;
 
-use Gorky\Espago\Model\Card;
-
-class ChargeResponse
+class Charge
 {
+    /**
+     * New payment, client's account has not been charged.
+     */
+    const PAYMENT_STATUS_NEW = 'new';
+
+    /**
+     * Payment executed, client's account was successfully charged.
+     */
+    const PAYMENT_STATUS_EXECUTED = 'executed';
+
+    /**
+     * In response of the rejected transaction, you receive reject_reason parameter.
+     */
+    const PAYMENT_STATUS_REJECTED = 'rejected';
+
+    /**
+     * Payment ended by failure
+     */
+    const PAYMENT_STATUS_FAILED = 'failed';
+
+    /**
+     * State available only if 3D-Secure is enabled. Customer is redirected to 3D-Secure page (bank/issuer site),
+     * Espago gateway is waiting for returning customer.
+     */
+    const PAYMENT_STATUS_TDS_REDIRECTED = 'tds_redirected';
+
+    /**
+     * [State available only if DCC is enabled]. Waiting for sending by Merchant the decision,
+     * about the payment currency chosen by customer.
+     */
+    const PAYMENT_STATUS_DCC_DECISION = 'dcc_decision';
+
+    /**
+     * Customer resigned from the autorization of payment or left payment [state available if enabled is 3D-Secure,
+     * DCC and/or MasterPass]. In case of leaving transaction with state "new", "tds_redirected" or "dcc_decision"
+     * (no customer action during 1,5 hour) transactions will change state to "resigned".
+     */
+    const PAYMENT_STATUS_RESIGNED = 'resigned';
+
     /**
      * @var string
      */
@@ -39,7 +76,7 @@ class ChargeResponse
     /**
      * @var string
      */
-    private $client;
+    private $clientId;
 
     /**
      * @var \DateTime
@@ -110,7 +147,7 @@ class ChargeResponse
     /**
      * @param string
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setDescription($description)
     {
@@ -130,7 +167,7 @@ class ChargeResponse
     /**
      * @param string $channel
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setChannel($channel)
     {
@@ -150,7 +187,7 @@ class ChargeResponse
     /**
      * @param int $amount
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setAmount($amount)
     {
@@ -170,7 +207,7 @@ class ChargeResponse
     /**
      * @param string $currency
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setCurrency($currency)
     {
@@ -190,7 +227,7 @@ class ChargeResponse
     /**
      * @param string $state
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setState($state)
     {
@@ -202,19 +239,19 @@ class ChargeResponse
     /**
      * @return string
      */
-    public function getClient()
+    public function getClientId()
     {
-        return $this->client;
+        return $this->clientId;
     }
 
     /**
-     * @param string $client
+     * @param string $clientId
      *
-     * @return ChargeResponse
+     * @return Charge
      */
-    public function setClient($client)
+    public function setClientId($clientId)
     {
-        $this->client = $client;
+        $this->clientId = $clientId;
 
         return $this;
     }
@@ -230,7 +267,7 @@ class ChargeResponse
     /**
      * @param \DateTime $createdAt
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setCreatedAt($createdAt)
     {
@@ -250,7 +287,7 @@ class ChargeResponse
     /**
      * @param Card $card
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setCard(Card $card)
     {
@@ -270,7 +307,7 @@ class ChargeResponse
     /**
      * @param string $issuerResponseCode
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setIssuerResponseCode($issuerResponseCode)
     {
@@ -310,7 +347,7 @@ class ChargeResponse
     /**
      * @param string $transactionId
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setTransactionId($transactionId)
     {
@@ -330,7 +367,7 @@ class ChargeResponse
     /**
      * @param string $redirectUrl
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setRedirectUrl($redirectUrl)
     {
@@ -350,7 +387,7 @@ class ChargeResponse
     /**
      * @param boolean $is3dSecure
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setIs3dSecure($is3dSecure)
     {
@@ -370,7 +407,7 @@ class ChargeResponse
     /**
      * @param boolean $reversable
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setReversable($reversable)
     {
@@ -390,7 +427,7 @@ class ChargeResponse
     /**
      * @param array $tdsRedirectForm
      *
-     * @return ChargeResponse
+     * @return Charge
      */
     public function setTdsRedirectForm($tdsRedirectForm)
     {

@@ -7,22 +7,36 @@ use Gorky\Espago\Exception\Api\ServiceUnavailableException;
 use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
 use Gorky\Espago\Exception\NetworkConnectionException;
 use Gorky\Espago\Exception\Payment\PaymentOperationFailedException;
-use Gorky\Espago\Model\Card;
+use Gorky\Espago\Factory\HttpCallFactory;
+use Gorky\Espago\Handler\ClientResponseHandler;
+use Gorky\Espago\Http\HttpClient;
 use Gorky\Espago\Model\Client;
-use Gorky\Espago\Response\Client\CreateClient;
-use Gorky\Espago\Response\Client\DeleteClient;
-use Gorky\Espago\Response\Client\GetClient;
-use Gorky\Espago\Response\Client\UpdateClient;
 use Gorky\Espago\Value\Token;
 
 class ClientsApi extends AbstractApi
 {
     /**
+     * @param HttpClient $httpClient
+     * @param HttpCallFactory $httpCallFactory
+     * @param ClientResponseHandler $clientResponseHandler
+     */
+    public function __construct(
+        HttpClient $httpClient,
+        HttpCallFactory $httpCallFactory,
+        ClientResponseHandler $clientResponseHandler
+    )
+    {
+        parent::__construct($httpClient, $httpCallFactory);
+
+        $this->responseHandler = $clientResponseHandler;
+    }
+
+    /**
      * @param Token $token
      * @param string|null $email
      * @param string|null $description
      *
-     * @return CreateClient
+     * @return Client
      *
      * @throws HttpCallUnsupportedMethodException
      * @throws BadRequestException
@@ -43,16 +57,13 @@ class ClientsApi extends AbstractApi
             )
         );
 
-        return new CreateClient(
-            $this->buildClient($apiResponse),
-            $this->buildCard($apiResponse)
-        );
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
      * @param string $clientId
      *
-     * @return GetClient
+     * @return Client
      *
      * @throws HttpCallUnsupportedMethodException
      * @throws BadRequestException
@@ -68,10 +79,7 @@ class ClientsApi extends AbstractApi
             )
         );
 
-        return new GetClient(
-            $this->buildClient($apiResponse),
-            $this->buildCard($apiResponse)
-        );
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
@@ -80,7 +88,7 @@ class ClientsApi extends AbstractApi
      * @param null $description
      * @param null $email
      *
-     * @return UpdateClient
+     * @return Client
      *
      * @throws HttpCallUnsupportedMethodException
      * @throws BadRequestException
@@ -101,16 +109,13 @@ class ClientsApi extends AbstractApi
             )
         );
 
-        return new UpdateClient(
-            $this->buildClient($apiResponse),
-            $this->buildCard($apiResponse)
-        );
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
      * @param Client $client
      *
-     * @return DeleteClient
+     * @return bool
      *
      * @throws HttpCallUnsupportedMethodException
      * @throws BadRequestException
@@ -126,39 +131,6 @@ class ClientsApi extends AbstractApi
             )
         );
 
-        return new DeleteClient(204 === $response);
-    }
-
-    /**
-     * @param array $apiResponse
-     *
-     * @return Client
-     */
-    private function buildClient(array $apiResponse)
-    {
-        return new Client(
-            $apiResponse['id'],
-            $apiResponse['email'],
-            $apiResponse['description'],
-            $apiResponse['created_at']
-        );
-    }
-
-    /**
-     * @param array $apiResponse
-     *
-     * @return Card
-     */
-    private function buildCard(array $apiResponse)
-    {
-        return new Card(
-            $apiResponse['card']['company'],
-            $apiResponse['card']['last4'],
-            $apiResponse['card']['first_name'],
-            $apiResponse['card']['last_name'],
-            $apiResponse['card']['year'],
-            $apiResponse['card']['month'],
-            $apiResponse['card']['created_at']
-        );
+        return 204 === $response;
     }
 }

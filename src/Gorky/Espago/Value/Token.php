@@ -4,7 +4,6 @@ namespace Gorky\Espago\Value;
 
 class Token
 {
-
     /**
      * @var string
      */

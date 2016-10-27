@@ -5,48 +5,48 @@ namespace Gorky\Espago\Model;
 class Card
 {
     /**
-     * @var
+     * @var string
      */
     private $company;
 
     /**
-     * @var
+     * @var string
      */
     private $number;
 
     /**
-     * @var
+     * @var string
      */
     private $firstName;
 
     /**
-     * @var
+     * @var string
      */
     private $lastName;
 
     /**
-     * @var
+     * @var string
      */
     private $year;
 
     /**
-     * @var
+     * @var string
      */
     private $month;
 
     /**
-     * @var
+     * @var string
      */
     private $createdAt;
 
     /**
-     * @param $company
-     * @param $number
-     * @param $firstName
-     * @param $lastName
-     * @param $year
-     * @param $month
-     * @param $createdAt
+     * @param string $company
+     * @param string $number
+     * @param string $firstName
+     * @param string $lastName
+     * @param string $year
+     * @param string $month
+     * @param string $createdAt
      */
     public function __construct($company, $number, $firstName, $lastName, $year, $month, $createdAt)
     {
@@ -60,7 +60,7 @@ class Card
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getCompany()
     {
@@ -68,7 +68,7 @@ class Card
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNumber()
     {
@@ -84,7 +84,7 @@ class Card
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getFirstName()
     {
@@ -92,7 +92,7 @@ class Card
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLastName()
     {
@@ -108,7 +108,7 @@ class Card
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getYear()
     {
@@ -116,7 +116,7 @@ class Card
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMonth()
     {

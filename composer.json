@@ -10,6 +10,7 @@
     "squizlabs/php_codesniffer": "2.*",
     "sebastian/phpcpd": "*",
     "sebastian/phpdcd": "*",
-    "symfony/console": "~3.1"
+    "symfony/console": "~3.1",
+    "phpspec/phpspec": "^3.1"
   }
 }

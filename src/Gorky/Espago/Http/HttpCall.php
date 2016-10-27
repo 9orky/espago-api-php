@@ -1,6 +1,6 @@
 <?php
 
-namespace Gorky\Espago;
+namespace Gorky\Espago\Http;
 
 use Gorky\Espago\Exception\Call\HttpCallHeaderExistsException;
 use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
@@ -40,7 +40,7 @@ class HttpCall
     /**
      * @var array
      */
-    private $formData = [];
+    private $formData;
 
     /**
      * @param string $url
@@ -115,7 +115,7 @@ class HttpCall
      * @param array $formData
      * @return $this
      */
-    public function setFormData(array $formData)
+    public function setFormData(array $formData = [])
     {
         $this->formData = $formData;
 

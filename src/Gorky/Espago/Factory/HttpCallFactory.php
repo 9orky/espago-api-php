@@ -2,7 +2,7 @@
 
 namespace Gorky\Espago\Factory;
 
-use Gorky\Espago\HttpCall;
+use Gorky\Espago\Http\HttpCall;
 use Gorky\Espago\Value\ApiCredentials;
 
 class HttpCallFactory

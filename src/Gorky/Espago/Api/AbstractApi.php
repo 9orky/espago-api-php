@@ -3,28 +3,36 @@
 namespace Gorky\Espago\Api;
 
 use Gorky\Espago\Factory\HttpCallFactory;
-use Gorky\Espago\HttpClient;
+use Gorky\Espago\Factory\ResponseFactory;
+use Gorky\Espago\Handler\AbstractResponseHandler;
+use Gorky\Espago\Handler\ResponseHandlerInterface;
+use Gorky\Espago\Http\HttpClient;
 use Gorky\Espago\Value\ApiCredentials;
 
 abstract class AbstractApi
 {
+    /**
+     * @var HttpClient
+     */
+    protected $httpClient;
+
     /**
      * @var HttpCallFactory
      */
     protected $httpCallFactory;
 
     /**
-     * @var HttpClient
+     * @var AbstractResponseHandler
      */
-    protected $httpClient;
+    protected $responseHandler;
 
-    /**s
-     * @param HttpCallFactory $httpCallProvider
+    /**
      * @param HttpClient $httpClient
+     * @param HttpCallFactory $httpCallFactory
      */
-    public function __construct(HttpCallFactory $httpCallProvider, HttpClient $httpClient)
+    public function __construct(HttpClient $httpClient, HttpCallFactory $httpCallFactory)
     {
-        $this->httpCallFactory = $httpCallProvider;
         $this->httpClient = $httpClient;
+        $this->httpCallFactory = $httpCallFactory;
     }
 }

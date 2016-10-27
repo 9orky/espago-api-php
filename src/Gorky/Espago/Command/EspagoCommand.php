@@ -2,7 +2,7 @@
 
 namespace Gorky\Espago\Command;
 
-use Gorky\Espago\Factory\ApiFactory;
+use Gorky\Espago\ApiProvider;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,19 +16,19 @@ class EspagoCommand extends Command
     protected $io;
 
     /**
-     * @var ApiFactory
+     * @var ApiProvider
      */
-    protected $apiFactory;
+    protected $apiProvider;
 
     /**
      * @param null|string $name
-     * @param ApiFactory $apiFactory
+     * @param ApiProvider $apiProvider
      */
-    public function __construct($name, ApiFactory $apiFactory)
+    public function __construct($name, ApiProvider $apiProvider)
     {
         parent::__construct($name);
 
-        $this->apiFactory = $apiFactory;
+        $this->apiProvider = $apiProvider;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Gorky\Espago;
+namespace Gorky\Espago\Http;
 
 use Gorky\Espago\Error\BadRequestError;
 use Gorky\Espago\Exception\Api\BadRequestException;
