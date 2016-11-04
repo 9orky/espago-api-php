@@ -7,29 +7,13 @@ use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Factory\HttpCallFactory;
 use Gorky\Espago\Handler\ChargeResponseHandler;
 use Gorky\Espago\Http\HttpClient;
-use Gorky\Espago\Model\Charge;
-use Gorky\Espago\Model\Client;
-use Gorky\Espago\Value\Token;
+use Gorky\Espago\Model\Response\Charge;
+use Gorky\Espago\Model\Response\Client;
+use Gorky\Espago\Model\Response\Token;
 use GuzzleHttp\Exception\ClientException;
 
 class ChargesApi extends AbstractApi
 {
-    /**
-     * @param HttpClient $httpClient
-     * @param HttpCallFactory $httpCallFactory
-     * @param ChargeResponseHandler $chargeResponseHandler
-     */
-    public function __construct(
-        HttpClient $httpClient,
-        HttpCallFactory $httpCallFactory,
-        ChargeResponseHandler $chargeResponseHandler
-    )
-    {
-        parent::__construct($httpClient, $httpCallFactory);
-
-        $this->responseHandler = $chargeResponseHandler;
-    }
-
     /**
      * @param Token $token
      * @param float $amount
@@ -193,6 +177,27 @@ class ChargesApi extends AbstractApi
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildGetCall(
                 sprintf('/api/charges/%s', $chargeId)
+            )
+        );
+
+        $charge = $this->responseHandler->handle($apiResponse);
+
+        $this->responseHandler->issuerResponseCodeIsValid($charge);
+        $this->responseHandler->chargeIsNotRejected($charge);
+
+        return $charge;
+    }
+
+    /**
+     * @param string $chargeId
+     *
+     * @return Charge
+     */
+    public function refundCharge($chargeId)
+    {
+        $apiResponse = $this->httpClient->makeCall(
+            $this->httpCallFactory->buildPostCall(
+                sprintf('/api/charges/%s/refund', $chargeId)
             )
         );
 

@@ -26,7 +26,7 @@ try {
 
 $apiProvider = new \Gorky\Espago\ApiProvider(
     'https://sandbox.espago.com',
-    new \Gorky\Espago\Value\ApiCredentials(
+    new \Gorky\Espago\Model\ApiCredentials(
         $credentials['app_id'],
         $credentials['public_key'],
         $credentials['password']

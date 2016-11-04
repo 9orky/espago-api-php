@@ -2,17 +2,18 @@
 
 namespace Gorky\Espago\Handler;
 
-use Gorky\Espago\Value\Token;
+use Gorky\Espago\Http\HttpResponse;
+use Gorky\Espago\Model\Response\Token;
 
 class TokenResponseHandler extends AbstractResponseHandler
 {
     /**
-     * @param array $apiResponse
+     * @param HttpResponse $httpResponse
      *
      * @return Token
      */
-    public function handle(array $apiResponse)
+    public function handle(HttpResponse $httpResponse)
     {
-        return new Token($apiResponse['id']);
+        return new Token($httpResponse->getData()['id']);
     }
 }

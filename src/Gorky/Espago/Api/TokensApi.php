@@ -7,29 +7,14 @@ use Gorky\Espago\Exception\Api\ServiceUnavailableException;
 use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
 use Gorky\Espago\Exception\NetworkConnectionException;
 use Gorky\Espago\Factory\HttpCallFactory;
+use Gorky\Espago\Handler\AbstractResponseHandler;
 use Gorky\Espago\Handler\TokenResponseHandler;
 use Gorky\Espago\Http\HttpClient;
-use Gorky\Espago\Value\Token;
+use Gorky\Espago\Model\Response\Token;
 use Gorky\Espago\Model\UnauthorizedCard;
 
 class TokensApi extends AbstractApi
 {
-    /**
-     * @param HttpClient $httpClient
-     * @param HttpCallFactory $httpCallFactory
-     * @param TokenResponseHandler $tokenResponseHandler
-     */
-    public function __construct(
-        HttpClient $httpClient,
-        HttpCallFactory $httpCallFactory,
-        TokenResponseHandler $tokenResponseHandler
-    )
-    {
-        parent::__construct($httpClient, $httpCallFactory);
-
-        $this->responseHandler = $tokenResponseHandler;
-    }
-
     /**
      * @param string $number
      * @param string $firstName
@@ -40,7 +25,7 @@ class TokensApi extends AbstractApi
      *
      * @return UnauthorizedCard
      */
-    public function createUnauthorizedCard($number, $firstName, $lastName, $month, $year, $code)
+    public function createUnauthorizedCard($number, $firstName, $lastName, $month, $year, $code): UnauthorizedCard
     {
         return new UnauthorizedCard(
             $number,
@@ -62,7 +47,7 @@ class TokensApi extends AbstractApi
      * @throws NetworkConnectionException
      * @throws HttpCallUnsupportedMethodException
      */
-    public function createToken(UnauthorizedCard $unauthorizedCard)
+    public function createToken(UnauthorizedCard $unauthorizedCard): Token
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPostCallAuthorizedWithPublicKey(
@@ -77,7 +62,7 @@ class TokensApi extends AbstractApi
                 ]
             )
         );
-        
+
         return $this->responseHandler->handle($apiResponse);
     }
 
@@ -90,7 +75,7 @@ class TokensApi extends AbstractApi
      * @throws ServiceUnavailableException
      * @throws NetworkConnectionException
      */
-    public function getToken($token)
+    public function getToken(string $token): Token
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildGetCall(

@@ -1,6 +1,6 @@
 <?php
 
-namespace Gorky\Espago\Value;
+namespace Gorky\Espago\Model;
 
 class ApiCredentials
 {

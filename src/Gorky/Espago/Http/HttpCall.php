@@ -50,7 +50,7 @@ class HttpCall
      *
      * @throws HttpCallUnsupportedMethodException
      */
-    public function __construct($url, $method, $httpAuthUsername, $httpAuthPassword)
+    public function __construct(string $url, string $method, string $httpAuthUsername, string $httpAuthPassword)
     {
         if (!in_array($method, HttpCall::getSupportedMethods())) {
             throw new HttpCallUnsupportedMethodException(
@@ -69,7 +69,7 @@ class HttpCall
     /**
      * @return array
      */
-    public static function getSupportedMethods()
+    public static function getSupportedMethods(): array
     {
         return [
             self::METHOD_GET,
@@ -80,11 +80,12 @@ class HttpCall
     }
 
     /**
-     * @param $headerName
-     * @param $headerValue
-     * @return $this
+     * @param string $headerName
+     * @param string $headerValue
+     *
+     * @return self
      */
-    public function setHeader($headerName, $headerValue)
+    public function setHeader(string $headerName, string $headerValue): self
     {
         if ('Accept' === $headerName) {
             throw new \InvalidArgumentException('Accept header determines an API version so this is read-only');
@@ -96,11 +97,12 @@ class HttpCall
     }
 
     /**
-     * @param $headerName
-     * @param $headerValue
+     * @param string $headerName
+     * @param string $headerValue
+     *
      * @throws HttpCallHeaderExistsException
      */
-    public function appendHeader($headerName, $headerValue)
+    public function appendHeader(string $headerName, string $headerValue)
     {
         if (isset($this->headers[$headerName])) {
             throw new HttpCallHeaderExistsException(
@@ -113,9 +115,10 @@ class HttpCall
 
     /**
      * @param array $formData
-     * @return $this
+     *
+     * @return self
      */
-    public function setFormData(array $formData = [])
+    public function setFormData(array $formData = []): self
     {
         $this->formData = $formData;
 
@@ -123,33 +126,33 @@ class HttpCall
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getHttpAuthUsername()
+    public function getHttpAuthUsername(): string
     {
         return $this->httpAuthUsername;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getHttpAuthPassword()
+    public function getHttpAuthPassword(): string
     {
         return $this->httpAuthPassword;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -157,15 +160,15 @@ class HttpCall
     /**
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getFormData()
+    public function getFormData(): array
     {
         return $this->formData;
     }
@@ -173,7 +176,7 @@ class HttpCall
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return var_export($this, true);
     }

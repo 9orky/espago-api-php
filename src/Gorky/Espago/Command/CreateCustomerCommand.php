@@ -4,8 +4,8 @@ namespace Gorky\Espago\Command;
 
 use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Exception\Api\MalformedResponseException;
-use Gorky\Espago\Model\Card;
-use Gorky\Espago\Model\Client;
+use Gorky\Espago\Model\Response\Card;
+use Gorky\Espago\Model\Response\Client;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

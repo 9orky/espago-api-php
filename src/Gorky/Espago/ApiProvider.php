@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago;
 
 use Gorky\Espago\Api\ChargesApi;
@@ -10,7 +12,7 @@ use Gorky\Espago\Handler\ChargeResponseHandler;
 use Gorky\Espago\Handler\ClientResponseHandler;
 use Gorky\Espago\Handler\TokenResponseHandler;
 use Gorky\Espago\Http\HttpClient;
-use Gorky\Espago\Value\ApiCredentials;
+use Gorky\Espago\Model\ApiCredentials;
 
 class ApiProvider
 {
@@ -28,7 +30,7 @@ class ApiProvider
      * @param string $apiUrl
      * @param ApiCredentials $apiCredentials
      */
-    public function __construct($apiUrl, ApiCredentials $apiCredentials)
+    public function __construct(string $apiUrl, ApiCredentials $apiCredentials)
     {
         $this->httpClient = new HttpClient($apiUrl);
         $this->httpCallFactory = new HttpCallFactory($apiCredentials);
@@ -37,7 +39,7 @@ class ApiProvider
     /**
      * @return TokensApi
      */
-    public function getTokensApi()
+    public function getTokensApi(): TokensApi
     {
         return new TokensApi(
             $this->httpClient,
@@ -49,7 +51,7 @@ class ApiProvider
     /**
      * @return ClientsApi
      */
-    public function getClientsApi()
+    public function getClientsApi(): ClientsApi
     {
         return new ClientsApi(
             $this->httpClient,
@@ -61,7 +63,7 @@ class ApiProvider
     /**
      * @return ChargesApi
      */
-    public function getChargesApi()
+    public function getChargesApi(): ChargesApi
     {
         return new ChargesApi(
             $this->httpClient,

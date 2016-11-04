@@ -7,8 +7,8 @@ use Gorky\Espago\Error\PaymentOperationError;
 use Gorky\Espago\Error\PaymentRejectionError;
 use Gorky\Espago\Exception\Payment\PaymentOperationFailedException;
 use Gorky\Espago\Exception\Payment\PaymentRejectedException;
-use Gorky\Espago\Model\Card;
-use Gorky\Espago\Model\Charge;
+use Gorky\Espago\Model\Response\Card;
+use Gorky\Espago\Model\Response\Charge;
 
 class ChargeResponseHandler extends AbstractResponseHandler
 {

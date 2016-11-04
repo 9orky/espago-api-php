@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Api;
 
 use Gorky\Espago\Exception\Api\BadRequestException;
@@ -7,30 +9,11 @@ use Gorky\Espago\Exception\Api\ServiceUnavailableException;
 use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
 use Gorky\Espago\Exception\NetworkConnectionException;
 use Gorky\Espago\Exception\Payment\PaymentOperationFailedException;
-use Gorky\Espago\Factory\HttpCallFactory;
-use Gorky\Espago\Handler\ClientResponseHandler;
-use Gorky\Espago\Http\HttpClient;
-use Gorky\Espago\Model\Client;
-use Gorky\Espago\Value\Token;
+use Gorky\Espago\Model\Response\Client;
+use Gorky\Espago\Model\Response\Token;
 
 class ClientsApi extends AbstractApi
 {
-    /**
-     * @param HttpClient $httpClient
-     * @param HttpCallFactory $httpCallFactory
-     * @param ClientResponseHandler $clientResponseHandler
-     */
-    public function __construct(
-        HttpClient $httpClient,
-        HttpCallFactory $httpCallFactory,
-        ClientResponseHandler $clientResponseHandler
-    )
-    {
-        parent::__construct($httpClient, $httpCallFactory);
-
-        $this->responseHandler = $clientResponseHandler;
-    }
-
     /**
      * @param Token $token
      * @param string|null $email
@@ -44,14 +27,14 @@ class ClientsApi extends AbstractApi
      * @throws NetworkConnectionException
      * @throws PaymentOperationFailedException
      */
-    public function createClient(Token $token, $email = null, $description = null)
+    public function createClient(Token $token, string $email = null, string $description = null): Client
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPostCall(
                 '/api/clients',
                 [
                     'email'       => $email,
-                    'card'        => (string) $token,
+                    'card'        => $token->getTokenValue(),
                     'description' => $description
                 ]
             )
@@ -71,7 +54,7 @@ class ClientsApi extends AbstractApi
      * @throws NetworkConnectionException
      * @throws PaymentOperationFailedException
      */
-    public function getClient($clientId)
+    public function getClient(string $clientId): Client
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildGetCall(
@@ -85,8 +68,8 @@ class ClientsApi extends AbstractApi
     /**
      * @param Client $client
      * @param Token $token
-     * @param null $description
-     * @param null $email
+     * @param string|null $description
+     * @param string|null $email
      *
      * @return Client
      *
@@ -96,7 +79,7 @@ class ClientsApi extends AbstractApi
      * @throws NetworkConnectionException
      * @throws PaymentOperationFailedException
      */
-    public function updateClient(Client $client, Token $token, $description = null, $email = null)
+    public function updateClient(Client $client, Token $token, string $description = null, string $email = null): Client
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPutCall(
@@ -123,14 +106,14 @@ class ClientsApi extends AbstractApi
      * @throws NetworkConnectionException
      * @throws PaymentOperationFailedException
      */
-    public function removeClient(Client $client)
+    public function removeClient(Client $client): bool
     {
-        $response = $this->httpClient->makeCall(
+        $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildDeleteCall(
                 sprintf('/api/clients/%d', $client->getId())
             )
         );
 
-        return 204 === $response;
+        return 204 === $apiResponse->getStatusCode();
     }
 }

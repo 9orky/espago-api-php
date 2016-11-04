@@ -1,19 +1,24 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Handler;
 
-use Gorky\Espago\Model\Card;
-use Gorky\Espago\Model\Client;
+use Gorky\Espago\Http\HttpResponse;
+use Gorky\Espago\Model\Response\Card;
+use Gorky\Espago\Model\Response\Client;
 
 class ClientResponseHandler extends AbstractResponseHandler
 {
     /**
-     * @param array $apiResponse
+     * @param HttpResponse $httpResponse
      *
      * @return Client
      */
-    public function handle(array $apiResponse)
+    public function handle(HttpResponse $httpResponse): Client
     {
+        $apiResponse = $httpResponse->getData();
+
         return new Client(
             $apiResponse['id'],
             $apiResponse['email'],

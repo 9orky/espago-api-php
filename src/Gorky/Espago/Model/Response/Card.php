@@ -1,6 +1,6 @@
 <?php
 
-namespace Gorky\Espago\Model;
+namespace Gorky\Espago\Model\Response;
 
 class Card
 {

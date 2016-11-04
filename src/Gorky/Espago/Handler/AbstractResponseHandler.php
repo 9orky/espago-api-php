@@ -2,12 +2,14 @@
 
 namespace Gorky\Espago\Handler;
 
+use Gorky\Espago\Http\HttpResponse;
+
 abstract class AbstractResponseHandler
 {
     /**
-     * @param array $apiResponse
+     * @param HttpResponse $httpResponse
      *
      * @return mixed
      */
-    abstract public function handle(array $apiResponse);
+    abstract public function handle(HttpResponse $httpResponse);
 }

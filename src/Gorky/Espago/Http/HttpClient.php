@@ -18,7 +18,7 @@ use Psr\Http\Message\StreamInterface;
 class HttpClient
 {
     /**
-     * @var
+     * @var string
      */
     private $apiUrl;
 
@@ -40,25 +40,29 @@ class HttpClient
      * @param HttpCall $httpCall
      * @param callable $clientExceptionCallback
      *
-     * @return array
+     * @return HttpResponse
      *
      * @throws BadRequestException
      * @throws NetworkConnectionException
      * @throws ResourceNotFoundException
      * @throws ServiceUnavailableException
      */
-    public function makeCall(HttpCall $httpCall, callable $clientExceptionCallback = null)
+    public function makeCall(HttpCall $httpCall, callable $clientExceptionCallback = null): HttpResponse
     {
         try {
             switch ($httpCall->getMethod()) {
                 case HttpCall::METHOD_GET:
-                    return $this->responseToArray($this->get($httpCall)->getBody());
+                    $response = $this->get($httpCall);
+                    return new HttpResponse($response->getStatusCode(), $this->responseToArray($response->getBody()));
                 case HttpCall::METHOD_POST:
-                    return $this->responseToArray($this->post($httpCall)->getBody());
+                    $response = $this->post($httpCall);
+                    return new HttpResponse($response->getStatusCode(), $this->responseToArray($response->getBody()));
                 case HttpCall::METHOD_PUT:
-                    return $this->responseToArray($this->put($httpCall)->getBody());
+                    $response = $this->put($httpCall);
+                    return new HttpResponse($response->getStatusCode(), $this->responseToArray($response->getBody()));
                 case HttpCall::METHOD_DELETE:
-                    return $this->responseToArray($this->delete($httpCall)->getBody());
+                    $response = $this->delete($httpCall);
+                    return new HttpResponse($response->getStatusCode(), $this->responseToArray($response->getBody()));
             }
         } catch (ConnectException $e) {
             throw new NetworkConnectionException('Espago API is unreachable. Debug network and check if API is online');
@@ -86,17 +90,6 @@ class HttpClient
 
             throw $badRequestException;
         }
-    }
-
-    /**
-     * @param string $headerName
-     * @param array $values
-     *
-     * @return array
-     */
-    public function createHeader($headerName, array $values)
-    {
-        return [$headerName => $values];
     }
 
     /**
@@ -171,7 +164,7 @@ class HttpClient
      *
      * @throws MalformedResponseException
      */
-    private function responseToArray(StreamInterface $response)
+    private function responseToArray(StreamInterface $response): array
     {
         $arrayResponse = json_decode($response->getContents(), true);
         if (JSON_ERROR_NONE !== json_last_error()) {
