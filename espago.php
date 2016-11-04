@@ -1,13 +1,41 @@
+#!/usr/bin/env php
 <?php
+
 require 'vendor/autoload.php';
 
-$apiCredentials = new \Gorky\Espago\Value\ApiCredentials('ms_6jipxgyL3', '4kdYkSxSY2t9APLBQw9x', 'yGfuf5sS');
-$httpClient = new \Gorky\Espago\Api\Client\HttpClient('https://sandbox.espago.com');
-$httpCallBuilder = new \Gorky\Espago\Builder\HttpCallBuilder($apiCredentials);
+use Symfony\Component\Console\Application;
 
-$espagoApi = new \Gorky\Espago\Api\EspagoApi($apiCredentials, $httpCallBuilder, $httpClient);
+$credentialsFilePath = sprintf('%s/credentials.php', __DIR__);
 
-$unauthorizedCard = $espagoApi->createUnauthorizedCard('4242424242424242', 'T', 'K', '01', '2017', '123');
+try {
+    if (!is_file($credentialsFilePath)) {
+        throw new Exception(sprintf('Credentials file does not exist at this location: %s', $credentialsFilePath));
+    }
 
-$token = $espagoApi->createToken($unauthorizedCard);
-var_dump($token);
+    if (!$credentials = require($credentialsFilePath)) {
+        throw new Exception(
+            'Credentials file exists but does not contain any data.\
+            Please, take a look at configuration instructions for this Dev Console'
+        );
+    }
+} catch (\Exception $e) {
+    echo "\n{$e->getMessage()}\n";
+
+    return -1;
+}
+
+$apiProvider = new \Gorky\Espago\ApiProvider(
+    'https://sandbox.espago.com',
+    new \Gorky\Espago\Model\ApiCredentials(
+        $credentials['app_id'],
+        $credentials['public_key'],
+        $credentials['password']
+    )
+);
+
+$application = new Application();
+
+$application->add(new \Gorky\Espago\Command\CreateCustomerCommand('customer:create', $apiProvider));
+$application->add(new \Gorky\Espago\Command\ChargeCustomerCommand('customer:charge', $apiProvider));
+
+$application->run();

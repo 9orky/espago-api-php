@@ -1,2 +1,6 @@
 .idea
 vendor
+phpmd-report.html
+phpcs-report.txt
+tests/
+credentials.php

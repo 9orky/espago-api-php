@@ -38,24 +38,30 @@ class UnauthorizedCard
      * @param string $number
      * @param string $firstName
      * @param string $lastName
-     * @param string $year
      * @param string $month
+     * @param string $year
      * @param string $code
      */
-    public function __construct($number, $firstName, $lastName, $year, $month, $code)
-    {
+    public function __construct(
+        string $number,
+        string $firstName,
+        string $lastName,
+        string $month,
+        string $year,
+        string $code
+    ) {
         $this->number    = $number;
         $this->firstName = $firstName;
         $this->lastName  = $lastName;
-        $this->year      = $year;
         $this->month     = $month;
+        $this->year      = $year;
         $this->code      = $code;
     }
 
     /**
      * @return string
      */
-    public function getNumber()
+    public function getNumber(): string
     {
         return $this->number;
     }
@@ -63,7 +69,7 @@ class UnauthorizedCard
     /**
      * @return string
      */
-    public function getFirstName()
+    public function getFirstName(): string
     {
         return $this->firstName;
     }
@@ -71,7 +77,7 @@ class UnauthorizedCard
     /**
      * @return string
      */
-    public function getLastName()
+    public function getLastName(): string
     {
         return $this->lastName;
     }
@@ -79,7 +85,7 @@ class UnauthorizedCard
     /**
      * @return string
      */
-    public function getYear()
+    public function getYear(): string
     {
         return $this->year;
     }
@@ -87,7 +93,7 @@ class UnauthorizedCard
     /**
      * @return string
      */
-    public function getMonth()
+    public function getMonth(): string
     {
         return $this->month;
     }
@@ -95,7 +101,7 @@ class UnauthorizedCard
     /**
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }

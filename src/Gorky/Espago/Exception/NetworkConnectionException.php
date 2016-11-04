@@ -2,7 +2,7 @@
 
 namespace Gorky\Espago\Exception;
 
-class NetworkConnectionException extends \Exception
+class NetworkConnectionException extends EspagoException
 {
 
 }
