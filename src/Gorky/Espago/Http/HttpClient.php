@@ -7,7 +7,7 @@ use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Exception\Api\MalformedResponseException;
 use Gorky\Espago\Exception\Api\ResourceNotFoundException;
 use Gorky\Espago\Exception\Api\ServiceUnavailableException;
-use Gorky\Espago\Exception\NetworkConnectionException;
+use Gorky\Espago\Exception\Transport\NetworkConnectionException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;

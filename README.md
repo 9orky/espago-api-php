@@ -1,4 +1,4 @@
-# Espago API (PHP)
+# Espago API (PHP) [![Build Status](https://travis-ci.org/9orky/espago-api-php.svg?branch=master)](https://travis-ci.org/9orky/espago-api-php)
 
 Unofficial client of the Espago API written in PHP.
 

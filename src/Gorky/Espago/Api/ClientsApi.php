@@ -7,7 +7,7 @@ namespace Gorky\Espago\Api;
 use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Exception\Api\ServiceUnavailableException;
 use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
-use Gorky\Espago\Exception\NetworkConnectionException;
+use Gorky\Espago\Exception\Transport\NetworkConnectionException;
 use Gorky\Espago\Exception\Payment\PaymentOperationFailedException;
 use Gorky\Espago\Model\Response\Client;
 use Gorky\Espago\Model\Response\Token;

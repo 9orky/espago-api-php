@@ -5,7 +5,7 @@ namespace Gorky\Espago\Api;
 use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Exception\Api\ServiceUnavailableException;
 use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
-use Gorky\Espago\Exception\NetworkConnectionException;
+use Gorky\Espago\Exception\Transport\NetworkConnectionException;
 use Gorky\Espago\Factory\HttpCallFactory;
 use Gorky\Espago\Handler\AbstractResponseHandler;
 use Gorky\Espago\Handler\TokenResponseHandler;
