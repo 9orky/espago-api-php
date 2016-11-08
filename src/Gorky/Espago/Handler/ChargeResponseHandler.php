@@ -1,27 +1,31 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Handler;
 
-use Gorky\Espago\Api\ChargesApi;
 use Gorky\Espago\Error\PaymentOperationError;
 use Gorky\Espago\Error\PaymentRejectionError;
 use Gorky\Espago\Exception\Payment\PaymentOperationFailedException;
 use Gorky\Espago\Exception\Payment\PaymentRejectedException;
+use Gorky\Espago\Http\HttpResponse;
 use Gorky\Espago\Model\Response\Card;
 use Gorky\Espago\Model\Response\Charge;
 
 class ChargeResponseHandler extends AbstractResponseHandler
 {
     /**
-     * @param array $apiResponse
+     * @param HttpResponse $httpResponse
      *
      * @throws PaymentOperationFailedException
      * @throws PaymentRejectedException
      *
      * @return Charge
      */
-    public function handle(array $apiResponse)
+    public function handle(HttpResponse $httpResponse): Charge
     {
+        $apiResponse = $httpResponse->getData();
+
         $charge = (new Charge($apiResponse['id']))
             ->setDescription($apiResponse['description'])
             ->setChannel($apiResponse['channel'])
@@ -58,15 +62,20 @@ class ChargeResponseHandler extends AbstractResponseHandler
             $charge->setRejectReason($apiResponse['reject_reason']);
         }
 
+        $this->issuerResponseCodeIsValid($charge);
+        $this->chargeIsNotRejected($charge);
+
         return $charge;
     }
 
     /**
      * @param Charge $charge
      *
+     * @return null
+     *
      * @throws PaymentOperationFailedException
      */
-    public function issuerResponseCodeIsValid(Charge $charge)
+    private function issuerResponseCodeIsValid(Charge $charge)
     {
         if ('00' !== $charge->getIssuerResponseCode()) {
             throw new PaymentOperationFailedException(
@@ -78,9 +87,11 @@ class ChargeResponseHandler extends AbstractResponseHandler
     /**
      * @param Charge $charge
      *
+     * @return null
+     *
      * @throws PaymentRejectedException
      */
-    public function chargeIsNotRejected(Charge $charge)
+    private function chargeIsNotRejected(Charge $charge)
     {
         if (Charge::PAYMENT_STATUS_REJECTED === $charge->getState() && $charge->getRejectReason()) {
             $rejectReason = PaymentRejectionError::create($charge->getRejectReason());

@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Api;
 
 use Gorky\Espago\Error\BadRequestError;
 use Gorky\Espago\Exception\Api\BadRequestException;
-use Gorky\Espago\Factory\HttpCallFactory;
-use Gorky\Espago\Handler\ChargeResponseHandler;
-use Gorky\Espago\Http\HttpClient;
 use Gorky\Espago\Model\Response\Charge;
 use Gorky\Espago\Model\Response\Client;
 use Gorky\Espago\Model\Response\Token;
@@ -22,7 +21,7 @@ class ChargesApi extends AbstractApi
      *
      * @return Charge
      */
-    public function createAuthorizationByToken(Token $token, $amount, $currency, $description)
+    public function createAuthorizationByToken(Token $token, float $amount, string $currency, string $description): Charge
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPostCall(
@@ -36,12 +35,7 @@ class ChargesApi extends AbstractApi
             )
         );
 
-        $charge = $this->responseHandler->handle($apiResponse);
-
-        $this->responseHandler->issuerResponseCodeIsValid($charge);
-        $this->responseHandler->chargeIsNotRejected($charge);
-
-        return $charge;
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
@@ -52,7 +46,7 @@ class ChargesApi extends AbstractApi
      *
      * @return Charge
      */
-    public function createAuthorizationByClient(Client $client, $amount, $currency, $description)
+    public function createAuthorizationByClient(Client $client, float $amount, string $currency, string $description): Charge
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPostCall(
@@ -66,12 +60,7 @@ class ChargesApi extends AbstractApi
             )
         );
 
-        $charge = $this->responseHandler->handle($apiResponse);
-
-        $this->responseHandler->issuerResponseCodeIsValid($charge);
-        $this->responseHandler->chargeIsNotRejected($charge);
-
-        return $charge;
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
@@ -80,7 +69,7 @@ class ChargesApi extends AbstractApi
      *
      * @return Charge
      */
-    public function captureAuthorization($chargeId, $amount)
+    public function captureAuthorization(string $chargeId, float $amount): Charge
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPostCall(
@@ -101,12 +90,7 @@ class ChargesApi extends AbstractApi
             }
         );
 
-        $charge = $this->responseHandler->handle($apiResponse);
-
-        $this->responseHandler->issuerResponseCodeIsValid($charge);
-        $this->responseHandler->chargeIsNotRejected($charge);
-
-        return $charge;
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
@@ -117,7 +101,7 @@ class ChargesApi extends AbstractApi
      *
      * @return Charge
      */
-    public function createChargeByToken(Token $token, $amount, $currency, $description)
+    public function createChargeByToken(Token $token, float $amount, string $currency, string $description): Charge
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPostCall(
@@ -130,12 +114,7 @@ class ChargesApi extends AbstractApi
             )
         );
 
-        $charge = $this->responseHandler->handle($apiResponse);
-
-        $this->responseHandler->issuerResponseCodeIsValid($charge);
-        $this->responseHandler->chargeIsNotRejected($charge);
-
-        return $charge;
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
@@ -146,7 +125,7 @@ class ChargesApi extends AbstractApi
      *
      * @return Charge
      */
-    public function createChargeByClient(Client $client, $amount, $currency, $description)
+    public function createChargeByClient(Client $client, float $amount, string $currency, string $description): Charge
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPostCall(
@@ -159,12 +138,7 @@ class ChargesApi extends AbstractApi
             )
         );
 
-        $charge = $this->responseHandler->handle($apiResponse);
-
-        $this->responseHandler->issuerResponseCodeIsValid($charge);
-        $this->responseHandler->chargeIsNotRejected($charge);
-
-        return $charge;
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
@@ -172,7 +146,7 @@ class ChargesApi extends AbstractApi
      *
      * @return Charge
      */
-    public function getCharge($chargeId)
+    public function getCharge(string $chargeId): Charge
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildGetCall(
@@ -180,33 +154,27 @@ class ChargesApi extends AbstractApi
             )
         );
 
-        $charge = $this->responseHandler->handle($apiResponse);
-
-        $this->responseHandler->issuerResponseCodeIsValid($charge);
-        $this->responseHandler->chargeIsNotRejected($charge);
-
-        return $charge;
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
      * @param string $chargeId
+     * @param float $amount
      *
      * @return Charge
      */
-    public function refundCharge($chargeId)
+    public function refundCharge(string $chargeId, float $amount): Charge
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildPostCall(
-                sprintf('/api/charges/%s/refund', $chargeId)
+                sprintf('/api/charges/%s/refund', $chargeId),
+                [
+                    'amount' => $amount
+                ]
             )
         );
 
-        $charge = $this->responseHandler->handle($apiResponse);
-
-        $this->responseHandler->issuerResponseCodeIsValid($charge);
-        $this->responseHandler->chargeIsNotRejected($charge);
-
-        return $charge;
+        return $this->responseHandler->handle($apiResponse);
     }
 
     /**
@@ -214,7 +182,7 @@ class ChargesApi extends AbstractApi
      *
      * @return Charge
      */
-    public function cancelCharge($chargeId)
+    public function cancelCharge(string $chargeId): Charge
     {
         $apiResponse = $this->httpClient->makeCall(
             $this->httpCallFactory->buildDeleteCall(
@@ -222,11 +190,6 @@ class ChargesApi extends AbstractApi
             )
         );
 
-        $charge = $this->responseHandler->handle($apiResponse);
-
-        $this->responseHandler->issuerResponseCodeIsValid($charge);
-        $this->responseHandler->chargeIsNotRejected($charge);
-
-        return $charge;
+        return $this->responseHandler->handle($apiResponse);
     }
 }

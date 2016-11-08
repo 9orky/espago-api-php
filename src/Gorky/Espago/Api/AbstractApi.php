@@ -3,11 +3,8 @@
 namespace Gorky\Espago\Api;
 
 use Gorky\Espago\Factory\HttpCallFactory;
-use Gorky\Espago\Factory\ResponseFactory;
 use Gorky\Espago\Handler\AbstractResponseHandler;
-use Gorky\Espago\Handler\ResponseHandlerInterface;
 use Gorky\Espago\Http\HttpClient;
-use Gorky\Espago\Model\ApiCredentials;
 
 abstract class AbstractApi
 {

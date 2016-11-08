@@ -63,7 +63,7 @@ class TokensApiSpec extends ObjectBehavior
 
         $responseHandler->handle($httpResponse)->willReturn($token);
 
-        $this->createToken($unauthorizedCard)->shouldReturnAnInstanceOf(Token::class);
+        $this->createToken($unauthorizedCard)->shouldReturn($token);
     }
 
     public function it_will_provide_existing_token(
@@ -74,12 +74,14 @@ class TokensApiSpec extends ObjectBehavior
         AbstractResponseHandler $responseHandler,
         Token $token
     ) {
-        $httpCallFactory->buildGetCall(Argument::type('string'))->willReturn($httpCall);
+        $httpCallFactory->buildGetCall(
+            Argument::type('string')
+        )->willReturn($httpCall);
 
         $httpClient->makeCall($httpCall)->willReturn($httpResponse);
 
         $responseHandler->handle($httpResponse)->willReturn($token);
 
-        $this->getToken(Argument::type('string'))->shouldReturnAnInstanceOf(Token::class);
+        $this->getToken(Argument::type('string'))->shouldReturn($token);
     }
 }

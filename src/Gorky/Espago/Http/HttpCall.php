@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Http;
 
 use Gorky\Espago\Exception\Call\HttpCallHeaderExistsException;

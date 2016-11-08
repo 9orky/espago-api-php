@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Model\Response;
 
 class Client
@@ -20,7 +22,7 @@ class Client
     private $description;
     
     /**
-     * @var int
+     * @var \DateTime
      */
     private $createdAt;
 
@@ -36,12 +38,12 @@ class Client
      * @param int $createdAt
      * @param Card $card
      */
-    public function __construct($id, $email, $description, $createdAt, Card $card)
+    public function __construct(string $id, string $email, string $description, int $createdAt, Card $card)
     {
         $this->id = $id;
         $this->email = $email;
         $this->description = $description;
-        $this->createdAt = $createdAt;
+        $this->createdAt = (new \DateTime())->setTimestamp($createdAt);
         $this->card = $card;
     }
 
@@ -49,7 +51,7 @@ class Client
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -57,7 +59,7 @@ class Client
     /**
      * @return string
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -65,15 +67,15 @@ class Client
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
-     * @return int
+     * @return \DateTime
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
@@ -81,7 +83,7 @@ class Client
     /**
      * @return Card
      */
-    public function getCard()
+    public function getCard(): Card
     {
         return $this->card;
     }

@@ -34,7 +34,12 @@ class ClientsApiSpec extends ObjectBehavior
         HttpResponse $httpResponse,
         AbstractResponseHandler $responseHandler
     ) {
-        $httpCallFactory->buildPostCall(Argument::type('string'), Argument::type('array'))->willReturn($httpCall);
+        $token->getTokenValue()->willReturn(Argument::type('string'));
+
+        $httpCallFactory->buildPostCall(
+            Argument::type('string'),
+            Argument::type('array')
+        )->willReturn($httpCall);
 
         $httpClient->makeCall($httpCall)->willReturn($httpResponse);
 
@@ -51,7 +56,9 @@ class ClientsApiSpec extends ObjectBehavior
         HttpResponse $httpResponse,
         AbstractResponseHandler $responseHandler
     ) {
-        $httpCallFactory->buildGetCall(Argument::type('string'))->willReturn($httpCall);
+        $httpCallFactory->buildGetCall(
+            Argument::type('string')
+        )->willReturn($httpCall);
 
         $httpClient->makeCall($httpCall)->willReturn($httpResponse);
 
@@ -69,7 +76,14 @@ class ClientsApiSpec extends ObjectBehavior
         HttpResponse $httpResponse,
         AbstractResponseHandler $responseHandler
     ) {
-        $httpCallFactory->buildPutCall(Argument::type('string'), Argument::type('array'))->willReturn($httpCall);
+        $client->getId()->willReturn(Argument::type('string'));
+
+        $token->getTokenValue()->willReturn(Argument::type('string'));
+
+        $httpCallFactory->buildPutCall(
+            Argument::type('string'),
+            Argument::type('array')
+        )->willReturn($httpCall);
 
         $httpClient->makeCall($httpCall)->willReturn($httpResponse);
 
@@ -86,7 +100,11 @@ class ClientsApiSpec extends ObjectBehavior
         HttpResponse $httpResponse,
         AbstractResponseHandler $responseHandler
     ) {
-        $httpCallFactory->buildDeleteCall(Argument::type('string'))->willReturn($httpCall);
+        $client->getId()->willReturn(Argument::type('string'));
+
+        $httpCallFactory->buildDeleteCall(
+            Argument::type('string')
+        )->willReturn($httpCall);
 
         $httpClient->makeCall($httpCall)->willReturn($httpResponse);
 
