@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Model\Response;
 
 class Token
@@ -12,7 +14,7 @@ class Token
     /**
      * @param string $tokenValue
      */
-    function __construct($tokenValue)
+    function __construct(string $tokenValue)
     {
         $this->tokenValue = $tokenValue;
     }
@@ -20,7 +22,7 @@ class Token
     /**
      * @return string
      */
-    public function getTokenValue()
+    public function getTokenValue(): string
     {
         return $this->tokenValue;
     }
@@ -28,7 +30,7 @@ class Token
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->tokenValue;
     }

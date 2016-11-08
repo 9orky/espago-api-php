@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Error;
 
 use Gorky\Espago\Exception\Payment\UndefinedPaymentRejectionReasonException;
@@ -36,7 +38,7 @@ class PaymentRejectionError
      *
      * @throws UndefinedPaymentRejectionReasonException
      */
-    public function __construct($reason)
+    public function __construct(string $reason)
     {
         if (!in_array($reason, array_keys(self::$paymentRejectionReasons))) {
             throw new UndefinedPaymentRejectionReasonException(sprintf('Unknown reason: %s', $reason));
@@ -51,7 +53,7 @@ class PaymentRejectionError
      *
      * @return PaymentRejectionError
      */
-    public static function create($reason)
+    public static function create(string $reason): PaymentRejectionError
     {
         return new self($reason);
     }

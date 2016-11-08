@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Http;
 
 use Gorky\Espago\Error\BadRequestError;
@@ -7,6 +9,7 @@ use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Exception\Api\MalformedResponseException;
 use Gorky\Espago\Exception\Api\ResourceNotFoundException;
 use Gorky\Espago\Exception\Api\ServiceUnavailableException;
+use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
 use Gorky\Espago\Exception\Transport\NetworkConnectionException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -30,7 +33,7 @@ class HttpClient
     /**
      * @param string $apiUrl
      */
-    public function __construct($apiUrl)
+    public function __construct(string $apiUrl)
     {
         $this->apiUrl = $apiUrl;
         $this->client = new Client();
@@ -38,7 +41,7 @@ class HttpClient
 
     /**
      * @param HttpCall $httpCall
-     * @param callable $clientExceptionCallback
+     * @param callable $clientExceptionCallback Stupid hack because of API errors inconsistent format
      *
      * @return HttpResponse
      *
@@ -46,6 +49,7 @@ class HttpClient
      * @throws NetworkConnectionException
      * @throws ResourceNotFoundException
      * @throws ServiceUnavailableException
+     * @throws HttpCallUnsupportedMethodException
      */
     public function makeCall(HttpCall $httpCall, callable $clientExceptionCallback = null): HttpResponse
     {
@@ -53,17 +57,26 @@ class HttpClient
             switch ($httpCall->getMethod()) {
                 case HttpCall::METHOD_GET:
                     $response = $this->get($httpCall);
-                    return new HttpResponse($response->getStatusCode(), $this->responseToArray($response->getBody()));
+                    break;
                 case HttpCall::METHOD_POST:
                     $response = $this->post($httpCall);
-                    return new HttpResponse($response->getStatusCode(), $this->responseToArray($response->getBody()));
+                    break;
                 case HttpCall::METHOD_PUT:
                     $response = $this->put($httpCall);
-                    return new HttpResponse($response->getStatusCode(), $this->responseToArray($response->getBody()));
+                    break;
                 case HttpCall::METHOD_DELETE:
                     $response = $this->delete($httpCall);
-                    return new HttpResponse($response->getStatusCode(), $this->responseToArray($response->getBody()));
+                    break;
+                default:
+                    throw new HttpCallUnsupportedMethodException(
+                        sprintf('Unknown HTTP method: %s', $httpCall->getMethod())
+                    );
             }
+
+            return new HttpResponse(
+                $response->getStatusCode(),
+                $this->responseToArray($response->getBody())
+            );
         } catch (ConnectException $e) {
             throw new NetworkConnectionException('Espago API is unreachable. Debug network and check if API is online');
         } catch (ServerException $e) {
@@ -152,7 +165,7 @@ class HttpClient
      *
      * @return string
      */
-    private function buildUrl($apiUrl, $endpointUrl)
+    private function buildUrl(string $apiUrl, string $endpointUrl)
     {
         return sprintf('%s%s', $apiUrl, $endpointUrl);
     }

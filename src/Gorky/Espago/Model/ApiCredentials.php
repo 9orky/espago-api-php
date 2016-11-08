@@ -1,30 +1,32 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Model;
 
 class ApiCredentials
 {
     /**
-     * @var
+     * @var string
      */
-    protected $appId;
+    private $appId;
 
     /**
-     * @var
+     * @var string
      */
-    protected $publicKey;
+    private $publicKey;
 
     /**
-     * @var
+     * @var string
      */
-    protected $password;
+    private $password;
 
     /**
-     * @param $appId
-     * @param $publicKey
-     * @param $password
+     * @param string $appId
+     * @param string $publicKey
+     * @param string $password
      */
-    public function __construct($appId, $publicKey, $password)
+    public function __construct(string $appId, string $publicKey, string $password)
     {
         $this->appId = $appId;
         $this->publicKey = $publicKey;
@@ -32,25 +34,25 @@ class ApiCredentials
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getAppId()
+    public function getAppId(): string
     {
         return $this->appId;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         return $this->publicKey;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }

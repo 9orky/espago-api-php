@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Http;
 
 class HttpResponse
@@ -18,7 +20,7 @@ class HttpResponse
      * @param int $statusCode
      * @param array $data
      */
-    public function __construct($statusCode, array $data)
+    public function __construct(int $statusCode, array $data)
     {
         $this->statusCode = $statusCode;
         $this->data = $data;

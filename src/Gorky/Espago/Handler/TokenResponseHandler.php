@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Handler;
 
 use Gorky\Espago\Http\HttpResponse;

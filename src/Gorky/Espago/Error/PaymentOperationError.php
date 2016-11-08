@@ -145,7 +145,7 @@ class PaymentOperationError
      *
      * @throws UndefinedPaymentErrorException
      */
-    public function __construct($code)
+    public function __construct(string $code)
     {
         foreach (self::$mapping as $error) {
             if (in_array($code, $error['codes'])) {
@@ -167,7 +167,7 @@ class PaymentOperationError
      *
      * @return PaymentOperationError
      */
-    public static function create($code)
+    public static function create(string $code):PaymentOperationError
     {
         return new self($code);
     }
@@ -175,7 +175,7 @@ class PaymentOperationError
     /**
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
@@ -183,7 +183,7 @@ class PaymentOperationError
     /**
      * @return string
      */
-    public function getSystemMessage()
+    public function getSystemMessage(): string
     {
         return $this->systemMessage;
     }
@@ -191,7 +191,7 @@ class PaymentOperationError
     /**
      * @return string
      */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->message;
     }

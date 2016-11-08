@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Error;
 
 class BadRequestError
 {
-
     /**
      * @var string
      */
@@ -28,12 +29,12 @@ class BadRequestError
     /**
      * @param string $param
      * @param string $message
-     * @param string $code
-     * @param string $type
+     * @param string|null $code
+     * @param string|null $type
      *
      * @return BadRequestError
      */
-    public static function create($param, $message, $code = null, $type = null)
+    public static function create(string $param, string $message, string $code = null, string $type = null): BadRequestError
     {
         return new self($param, $message, $code, $type);
     }
@@ -44,7 +45,7 @@ class BadRequestError
      * @param string $code
      * @param string $type
      */
-    public function __construct($param, $message, $code = null, $type = null)
+    public function __construct(string $param, string $message, string $code = null, string $type = null)
     {
         $this->code = $code;
         $this->message = $message;
@@ -53,33 +54,33 @@ class BadRequestError
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->message;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getParam()
+    public function getParam(): string
     {
         return $this->param;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -87,7 +88,7 @@ class BadRequestError
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return sprintf('[%s][%s] %s', $this->type, $this->param, $this->message);
     }

@@ -1,15 +1,13 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Api;
 
 use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Exception\Api\ServiceUnavailableException;
 use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
 use Gorky\Espago\Exception\Transport\NetworkConnectionException;
-use Gorky\Espago\Factory\HttpCallFactory;
-use Gorky\Espago\Handler\AbstractResponseHandler;
-use Gorky\Espago\Handler\TokenResponseHandler;
-use Gorky\Espago\Http\HttpClient;
 use Gorky\Espago\Model\Response\Token;
 use Gorky\Espago\Model\UnauthorizedCard;
 
@@ -25,8 +23,14 @@ class TokensApi extends AbstractApi
      *
      * @return UnauthorizedCard
      */
-    public function createUnauthorizedCard($number, $firstName, $lastName, $month, $year, $code): UnauthorizedCard
-    {
+    public function createUnauthorizedCard(
+        string $number,
+        string $firstName,
+        string $lastName,
+        string $month,
+        string $year,
+        string $code
+    ): UnauthorizedCard {
         return new UnauthorizedCard(
             $number,
             $firstName,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Model\Response;
 
 class Charge
@@ -123,7 +125,10 @@ class Charge
      */
     private $tdsRedirectForm;
 
-    public function __construct($id)
+    /**
+     * @param string $id
+     */
+    public function __construct(string $id)
     {
         $this->id = $id;
     }
@@ -131,25 +136,16 @@ class Charge
     /**
      * @return string
      */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
-     * @param string
-     *
+     * @param string $description
      * @return Charge
      */
-    public function setDescription($description)
+    public function setDescription(string $description): Charge
     {
         $this->description = $description;
 
@@ -159,17 +155,16 @@ class Charge
     /**
      * @return string
      */
-    public function getChannel()
+    public function getChannel(): string
     {
         return $this->channel;
     }
 
     /**
      * @param string $channel
-     *
      * @return Charge
      */
-    public function setChannel($channel)
+    public function setChannel(string $channel): Charge
     {
         $this->channel = $channel;
 
@@ -179,17 +174,16 @@ class Charge
     /**
      * @return int
      */
-    public function getAmount()
+    public function getAmount(): int
     {
         return $this->amount;
     }
 
     /**
      * @param int $amount
-     *
      * @return Charge
      */
-    public function setAmount($amount)
+    public function setAmount(int $amount): Charge
     {
         $this->amount = $amount;
 
@@ -199,17 +193,16 @@ class Charge
     /**
      * @return string
      */
-    public function getCurrency()
+    public function getCurrency(): string
     {
         return $this->currency;
     }
 
     /**
      * @param string $currency
-     *
      * @return Charge
      */
-    public function setCurrency($currency)
+    public function setCurrency(string $currency): Charge
     {
         $this->currency = $currency;
 
@@ -219,17 +212,16 @@ class Charge
     /**
      * @return string
      */
-    public function getState()
+    public function getState(): string
     {
         return $this->state;
     }
 
     /**
      * @param string $state
-     *
      * @return Charge
      */
-    public function setState($state)
+    public function setState(string $state): Charge
     {
         $this->state = $state;
 
@@ -239,17 +231,16 @@ class Charge
     /**
      * @return string
      */
-    public function getClientId()
+    public function getClientId(): string
     {
         return $this->clientId;
     }
 
     /**
      * @param string $clientId
-     *
      * @return Charge
      */
-    public function setClientId($clientId)
+    public function setClientId(string $clientId): Charge
     {
         $this->clientId = $clientId;
 
@@ -259,17 +250,16 @@ class Charge
     /**
      * @return \DateTime
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
     /**
      * @param \DateTime $createdAt
-     *
      * @return Charge
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTime $createdAt): Charge
     {
         $this->createdAt = $createdAt;
 
@@ -277,53 +267,20 @@ class Charge
     }
 
     /**
-     * @return Card
-     */
-    public function getCard()
-    {
-        return $this->card;
-    }
-
-    /**
-     * @param Card $card
-     *
-     * @return Charge
-     */
-    public function setCard(Card $card)
-    {
-        $this->card = $card;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
-    public function getIssuerResponseCode()
+    public function getIssuerResponseCode(): string
     {
         return $this->issuerResponseCode;
     }
 
     /**
      * @param string $issuerResponseCode
-     *
      * @return Charge
      */
-    public function setIssuerResponseCode($issuerResponseCode)
+    public function setIssuerResponseCode(string $issuerResponseCode): Charge
     {
         $this->issuerResponseCode = $issuerResponseCode;
-
-        return $this;
-    }
-
-    /**
-     * @param string $rejectReason
-     *
-     * @return $this
-     */
-    public function setRejectReason(string $rejectReason)
-    {
-        $this->rejectReason = $rejectReason;
 
         return $this;
     }
@@ -337,19 +294,29 @@ class Charge
     }
 
     /**
+     * @param string $rejectReason
+     * @return Charge
+     */
+    public function setRejectReason(string $rejectReason): Charge
+    {
+        $this->rejectReason = $rejectReason;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
-    public function getTransactionId()
+    public function getTransactionId(): string
     {
         return $this->transactionId;
     }
 
     /**
      * @param string $transactionId
-     *
      * @return Charge
      */
-    public function setTransactionId($transactionId)
+    public function setTransactionId(string $transactionId): Charge
     {
         $this->transactionId = $transactionId;
 
@@ -359,17 +326,16 @@ class Charge
     /**
      * @return string
      */
-    public function getRedirectUrl()
+    public function getRedirectUrl(): string
     {
         return $this->redirectUrl;
     }
 
     /**
      * @param string $redirectUrl
-     *
      * @return Charge
      */
-    public function setRedirectUrl($redirectUrl)
+    public function setRedirectUrl(string $redirectUrl): Charge
     {
         $this->redirectUrl = $redirectUrl;
 
@@ -379,17 +345,16 @@ class Charge
     /**
      * @return boolean
      */
-    public function isIs3dSecure()
+    public function isIs3dSecure(): bool
     {
         return $this->is3dSecure;
     }
 
     /**
      * @param boolean $is3dSecure
-     *
      * @return Charge
      */
-    public function setIs3dSecure($is3dSecure)
+    public function setIs3dSecure(bool $is3dSecure): Charge
     {
         $this->is3dSecure = $is3dSecure;
 
@@ -399,17 +364,16 @@ class Charge
     /**
      * @return boolean
      */
-    public function isReversable()
+    public function isReversable(): bool
     {
         return $this->reversable;
     }
 
     /**
      * @param boolean $reversable
-     *
      * @return Charge
      */
-    public function setReversable($reversable)
+    public function setReversable(bool $reversable): Charge
     {
         $this->reversable = $reversable;
 
@@ -419,19 +383,38 @@ class Charge
     /**
      * @return array
      */
-    public function getTdsRedirectForm()
+    public function getTdsRedirectForm(): array
     {
         return $this->tdsRedirectForm;
     }
 
     /**
      * @param array $tdsRedirectForm
+     * @return Charge
+     */
+    public function setTdsRedirectForm(array $tdsRedirectForm): Charge
+    {
+        $this->tdsRedirectForm = $tdsRedirectForm;
+
+        return $this;
+    }
+
+    /**
+     * @return Card
+     */
+    public function getCard(): Card
+    {
+        return $this->card;
+    }
+
+    /**
+     * @param Card $card
      *
      * @return Charge
      */
-    public function setTdsRedirectForm($tdsRedirectForm)
+    public function setCard(Card $card): self
     {
-        $this->tdsRedirectForm = $tdsRedirectForm;
+        $this->card = $card;
 
         return $this;
     }
