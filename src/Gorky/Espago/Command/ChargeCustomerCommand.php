@@ -4,6 +4,9 @@ namespace Gorky\Espago\Command;
 
 use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Exception\Api\ResourceNotFoundException;
+use Gorky\Espago\Exception\Payment\PaymentOperationFailedException;
+use Gorky\Espago\Exception\Payment\PaymentRejectedException;
+use Gorky\Espago\Model\Response\Charge;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,6 +21,7 @@ class ChargeCustomerCommand extends EspagoCommand
         $this->setDefinition(new InputDefinition([
             new InputOption('interactive'),
             new InputOption('authorize'),
+            new InputOption('refund'),
             new InputOption('capture'),
             new InputOption('cancel'),
             new InputOption('clientId', null, InputOption::VALUE_OPTIONAL),
@@ -38,16 +42,19 @@ class ChargeCustomerCommand extends EspagoCommand
     {
         $this->initiateSymfonyStyle($input, $output);
 
-        if ($input->getOption('capture')) {
+        if ($input->getOption('authorize')) {
             return $this->runCaptureProcedure($input);
         }
 
-        if ($input->getOption('cancel')) {
+        if ($input->getOption('refund')) {
             return $this->runCancelProcedure($input);
         }
 
+        if ($input->getOption('capture')) {
+            return $this->runCancelProcedure($input);
+        }
 
-        if ($input->getOption('authorize')) {
+        if ($input->getOption('cancel')) {
             return $this->runAuthorizationProcedure($input);
         }
 
@@ -116,16 +123,12 @@ class ChargeCustomerCommand extends EspagoCommand
                 $description
             );
 
-            if ($charge->isIs3dSecure()) {
-                $this->io->writeln('[HALTED]');
-                $this->io->caution(
-                    sprintf(
-                        '3DSecure is enabled. Please visit this URL to continue: %s',
-                        $charge->getRedirectUrl()
-                    )
-                );
+            if ($charge->is3dSecure()) {
+                return $this->handle3dSecure($charge);
+            }
 
-                return 1;
+            if ($charge->mustMakeDccDecision()) {
+                $chargesApi->makeDccDecision($charge->getId(), $this->handleDccDecision($charge));
             }
 
             $this->io->writeln(sprintf('[*] Done: %s', $charge->getId()));
@@ -145,6 +148,16 @@ class ChargeCustomerCommand extends EspagoCommand
             return 1;
         } catch (ResourceNotFoundException $e) {
             $this->io->error('Client was not found');
+
+            return 1;
+        } catch (PaymentOperationFailedException $e) {
+            $this->io->writeln('[ ] Payment operation failed');
+            $this->io->error($e->getMessage());
+
+            return 1;
+        } catch (PaymentRejectedException $e) {
+            $this->io->writeln('[ ] Payment operation was rejected');
+            $this->io->error($e->getMessage());
 
             return 1;
         }
@@ -178,15 +191,12 @@ class ChargeCustomerCommand extends EspagoCommand
 
             $charge = $chargesApi->createChargeByClient($customer, $amount, $currency, $description);
 
-            if ($charge->isIs3dSecure()) {
-                $this->io->caution(
-                    sprintf(
-                        '3DSecure is enabled. Please visit this URL to continue: %s',
-                        $charge->getRedirectUrl()
-                    )
-                );
+            if ($charge->is3dSecure()) {
+                return $this->handle3dSecure($charge);
+            }
 
-                return 1;
+            if ($charge->mustMakeDccDecision()) {
+                $charge = $chargesApi->makeDccDecision($charge->getId(), $this->handleDccDecision($charge));
             }
 
             $this->io->writeln(sprintf('[*] Success. Charge ID is: %s', $charge->getId()));
@@ -210,9 +220,65 @@ class ChargeCustomerCommand extends EspagoCommand
             $this->io->error('Client was not found');
 
             return 1;
+        } catch (PaymentOperationFailedException $e) {
+            $this->io->writeln('[ ] Payment operation failed');
+            $this->io->error($e->getMessage());
+
+            return 1;
+        } catch (PaymentRejectedException $e) {
+            $this->io->writeln('[ ] Payment operation was rejected');
+            $this->io->error($e->getMessage());
+
+            return 1;
         }
 
         return 0;
+    }
+
+    /**
+     * @param Charge $charge
+     *
+     * @return int
+     */
+    private function handle3dSecure(Charge $charge): int
+    {
+        $this->io->writeln(
+            sprintf(
+                '[~] Transaction: %s is 3d Secured, please visit: %s',
+                $charge->getTransactionId(),
+                $charge->getRedirectUrl()
+            )
+        );
+
+        return 0;
+    }
+
+    /**
+     * @param Charge $charge
+     *
+     * @return bool
+     */
+    private function handleDccDecision(Charge $charge): bool
+    {
+        $this->io->note('DCC exchange rate acceptance');
+
+        $dccDecision = $charge->getDccDecision();
+
+        $this->io->table([], [
+            ['Cardholder currency name' => $dccDecision->getCardHolderCurrencyName()],
+            ['Cardholder amount' => $dccDecision->getCardHolderAmount()],
+            ['Conversion rate' => $dccDecision->getCardHolderCurrencyName()],
+        ]);
+
+        $dccDecision = $this->io->ask('Do you accept DCC exchange rate?', 'Y/N', function($answer) {
+            if (!in_array($answer, ['Y', 'N'])) {
+                throw new \RuntimeException('Valid answers are: Y or N');
+            }
+
+            return 'Y' === $answer;
+        });
+
+        return $dccDecision;
     }
 
     /**
@@ -306,6 +372,16 @@ class ChargeCustomerCommand extends EspagoCommand
             $this->io->error('Client was not found');
 
             return 1;
+        } catch (PaymentOperationFailedException $e) {
+            $this->io->writeln('[ ] Payment operation failed');
+            $this->io->error($e->getMessage());
+
+            return 1;
+        } catch (PaymentRejectedException $e) {
+            $this->io->writeln('[ ] Payment operation was rejected');
+            $this->io->error($e->getMessage());
+
+            return 1;
         }
 
         return 0;
@@ -376,6 +452,16 @@ class ChargeCustomerCommand extends EspagoCommand
         } catch (ResourceNotFoundException $e) {
             $this->io->writeln('[ ] Operation Failed');
             $this->io->error('Charge was not found');
+            return 1;
+        } catch (PaymentOperationFailedException $e) {
+            $this->io->writeln('[ ] Payment operation failed');
+            $this->io->error($e->getMessage());
+
+            return 1;
+        } catch (PaymentRejectedException $e) {
+            $this->io->writeln('[ ] Payment operation was rejected');
+            $this->io->error($e->getMessage());
+
             return 1;
         }
 

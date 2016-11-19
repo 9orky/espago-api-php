@@ -27,17 +27,17 @@ class Card
     private $lastName;
 
     /**
-     * @var string
+     * @var int
      */
     private $year;
 
     /**
-     * @var string
+     * @var int
      */
     private $month;
 
     /**
-     * @var string
+     * @var int
      */
     private $createdAt;
 
@@ -46,27 +46,28 @@ class Card
      * @param string $number
      * @param string $firstName
      * @param string $lastName
-     * @param string $year
-     * @param string $month
-     * @param string $createdAt
+     * @param int $year
+     * @param int $month
+     * @param int $createdAt
      */
     public function __construct(
         string $company,
         string $number,
         string $firstName,
         string $lastName,
-        string $year,
-        string $month,
-        string $createdAt
+        int $year,
+        int $month,
+        int $createdAt
     ) {
-        $this->company   = $company;
-        $this->number    = $number;
+        $this->company = $company;
+        $this->number = $number;
         $this->firstName = $firstName;
-        $this->lastName  = $lastName;
-        $this->year      = $year;
-        $this->month     = $month;
+        $this->lastName = $lastName;
+        $this->year = $year;
+        $this->month = $month;
         $this->createdAt = $createdAt;
     }
+
 
     /**
      * @return string
@@ -97,7 +98,7 @@ class Card
      */
     public function getYear(): string
     {
-        return $this->year;
+        return (string) $this->year;
     }
 
     /**
@@ -105,7 +106,7 @@ class Card
      */
     public function getMonth(): string
     {
-        return $this->month;
+        return (string) $this->month;
     }
 
     /**
