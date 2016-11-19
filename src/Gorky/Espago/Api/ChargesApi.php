@@ -143,6 +143,25 @@ class ChargesApi extends AbstractApi
 
     /**
      * @param string $chargeId
+     * @param bool $acceptDccExchangeRate
+     *
+     * @return Charge
+     */
+    public function makeDccDecision(string $chargeId, bool $acceptDccExchangeRate)
+    {
+        $apiResponse = $this->httpClient->makeCall(
+            $this->httpCallFactory->buildPostCall(
+                sprintf('/api/charges/%s/dcc_decision', $chargeId), [
+                    'decision' => $acceptDccExchangeRate ? 'Y' : 'N'
+                ]
+            )
+        );
+
+        return $this->responseHandler->handle($apiResponse);
+    }
+
+    /**
+     * @param string $chargeId
      *
      * @return Charge
      */

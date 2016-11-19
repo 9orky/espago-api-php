@@ -61,7 +61,7 @@ class Charge
     private $channel;
 
     /**
-     * @var integer
+     * @var float
      */
     private $amount;
 
@@ -113,17 +113,27 @@ class Charge
     /**
      * @var bool
      */
-    private $is3dSecure;
+    private $is3dSecure = false;
 
     /**
      * @var bool
      */
-    private $reversable;
+    private $reversable = false;
 
     /**
      * @var array
      */
     private $tdsRedirectForm;
+
+    /**
+     * @var string
+     */
+    private $multiCurrencyIndicator;
+
+    /**
+     * @var DccDecision
+     */
+    private $dccDecision;
 
     /**
      * @param string $id
@@ -136,6 +146,14 @@ class Charge
     /**
      * @return string
      */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
     public function getDescription(): string
     {
         return $this->description;
@@ -143,6 +161,7 @@ class Charge
 
     /**
      * @param string $description
+     *
      * @return Charge
      */
     public function setDescription(string $description): Charge
@@ -162,6 +181,7 @@ class Charge
 
     /**
      * @param string $channel
+     *
      * @return Charge
      */
     public function setChannel(string $channel): Charge
@@ -172,18 +192,19 @@ class Charge
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getAmount(): int
+    public function getAmount(): float
     {
         return $this->amount;
     }
 
     /**
-     * @param int $amount
+     * @param float $amount
+     *
      * @return Charge
      */
-    public function setAmount(int $amount): Charge
+    public function setAmount(float $amount): Charge
     {
         $this->amount = $amount;
 
@@ -200,6 +221,7 @@ class Charge
 
     /**
      * @param string $currency
+     *
      * @return Charge
      */
     public function setCurrency(string $currency): Charge
@@ -219,6 +241,7 @@ class Charge
 
     /**
      * @param string $state
+     *
      * @return Charge
      */
     public function setState(string $state): Charge
@@ -238,6 +261,7 @@ class Charge
 
     /**
      * @param string $clientId
+     *
      * @return Charge
      */
     public function setClientId(string $clientId): Charge
@@ -257,6 +281,7 @@ class Charge
 
     /**
      * @param \DateTime $createdAt
+     *
      * @return Charge
      */
     public function setCreatedAt(\DateTime $createdAt): Charge
@@ -276,6 +301,7 @@ class Charge
 
     /**
      * @param string $issuerResponseCode
+     *
      * @return Charge
      */
     public function setIssuerResponseCode(string $issuerResponseCode): Charge
@@ -295,6 +321,7 @@ class Charge
 
     /**
      * @param string $rejectReason
+     *
      * @return Charge
      */
     public function setRejectReason(string $rejectReason): Charge
@@ -314,6 +341,7 @@ class Charge
 
     /**
      * @param string $transactionId
+     *
      * @return Charge
      */
     public function setTransactionId(string $transactionId): Charge
@@ -333,6 +361,7 @@ class Charge
 
     /**
      * @param string $redirectUrl
+     *
      * @return Charge
      */
     public function setRedirectUrl(string $redirectUrl): Charge
@@ -345,16 +374,17 @@ class Charge
     /**
      * @return boolean
      */
-    public function isIs3dSecure(): bool
+    public function is3dSecure(): bool
     {
         return $this->is3dSecure;
     }
 
     /**
      * @param boolean $is3dSecure
+     *
      * @return Charge
      */
-    public function setIs3dSecure(bool $is3dSecure): Charge
+    public function set3dSecure(bool $is3dSecure): Charge
     {
         $this->is3dSecure = $is3dSecure;
 
@@ -371,6 +401,7 @@ class Charge
 
     /**
      * @param boolean $reversable
+     *
      * @return Charge
      */
     public function setReversable(bool $reversable): Charge
@@ -390,6 +421,7 @@ class Charge
 
     /**
      * @param array $tdsRedirectForm
+     *
      * @return Charge
      */
     public function setTdsRedirectForm(array $tdsRedirectForm): Charge
@@ -417,5 +449,53 @@ class Charge
         $this->card = $card;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMultiCurrencyIndicator(): string
+    {
+        return $this->multiCurrencyIndicator;
+    }
+
+    /**
+     * @param string $multiCurrencyIndicator
+     *
+     * @return Charge
+     */
+    public function setMultiCurrencyIndicator(string $multiCurrencyIndicator): Charge
+    {
+        $this->multiCurrencyIndicator = $multiCurrencyIndicator;
+
+        return $this;
+    }
+
+    /**
+     * @return DccDecision
+     */
+    public function getDccDecision(): DccDecision
+    {
+        return $this->dccDecision;
+    }
+
+    /**
+     * @param DccDecision $dccDecision
+     *
+     * @return Charge
+     */
+    public function setDccDecision(DccDecision $dccDecision): Charge
+    {
+        $this->dccDecision = $dccDecision;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function mustMakeDccDecision()
+    {
+        return self::PAYMENT_STATUS_DCC_DECISION === $this->state;
     }
 }

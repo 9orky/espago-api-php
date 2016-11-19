@@ -11,6 +11,7 @@ use Gorky\Espago\Exception\Payment\PaymentRejectedException;
 use Gorky\Espago\Http\HttpResponse;
 use Gorky\Espago\Model\Response\Card;
 use Gorky\Espago\Model\Response\Charge;
+use Gorky\Espago\Model\Response\DccDecision;
 
 class ChargeResponseHandler extends AbstractResponseHandler
 {
@@ -29,11 +30,11 @@ class ChargeResponseHandler extends AbstractResponseHandler
         $charge = (new Charge($apiResponse['id']))
             ->setDescription($apiResponse['description'])
             ->setChannel($apiResponse['channel'])
-            ->setAmount($apiResponse['amount'])
+            ->setAmount((float) $apiResponse['amount'])
             ->setCurrency($apiResponse['currency'])
             ->setState($apiResponse['state'])
             ->setClientId($apiResponse['client'])
-            ->setCreatedAt($apiResponse['created_at'])
+            ->setCreatedAt((new \DateTime())->setTimestamp($apiResponse['created_at']))
             ->setTransactionId($apiResponse['transaction_id'])
             ->setIssuerResponseCode($apiResponse['issuer_response_code']);
 
@@ -51,7 +52,7 @@ class ChargeResponseHandler extends AbstractResponseHandler
 
         if (isset($apiResponse['redirect_url'])) {
             $charge->setRedirectUrl($apiResponse['redirect_url']);
-            $charge->setIs3dSecure(true);
+            $charge->set3dSecure(true);
         }
 
         if (isset($apiResponse['reversable'])) {
@@ -62,7 +63,19 @@ class ChargeResponseHandler extends AbstractResponseHandler
             $charge->setRejectReason($apiResponse['reject_reason']);
         }
 
-        $this->issuerResponseCodeIsValid($charge);
+        if (isset($apiResponse['multicurrency_indicator'])) {
+            $charge->setMultiCurrencyIndicator($apiResponse['multicurrency_indicator']);
+        }
+
+        if (isset($apiResponse['dcc_decision_information'])) {
+            $charge->setDccDecision(new DccDecision(
+                $apiResponse['dcc_decision_information']['cardholder_currency_name'],
+                $apiResponse['dcc_decision_information']['cardholder_amount'],
+                $apiResponse['dcc_decision_information']['conversion_rate']
+            ));
+        }
+
+        $this->paymentIsProcessedSuccessfullySoFar($charge);
         $this->chargeIsNotRejected($charge);
 
         return $charge;
@@ -75,11 +88,11 @@ class ChargeResponseHandler extends AbstractResponseHandler
      *
      * @throws PaymentOperationFailedException
      */
-    private function issuerResponseCodeIsValid(Charge $charge)
+    private function paymentIsProcessedSuccessfullySoFar(Charge $charge)
     {
-        if ('00' !== $charge->getIssuerResponseCode()) {
+        if (!in_array($charge->getState(), [Charge::PAYMENT_STATUS_NEW, Charge::PAYMENT_STATUS_EXECUTED])) {
             throw new PaymentOperationFailedException(
-                PaymentOperationError::create($charge->getIssuerResponseCode())
+                new PaymentOperationError($charge->getIssuerResponseCode())
             );
         }
     }
