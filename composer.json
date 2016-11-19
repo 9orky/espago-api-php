@@ -1,7 +1,6 @@
 {
-  "autoload": {
-    "psr-4": {"": "src/"}
-  },
+  "name": "9orky/espago-api-php",
+  "description": "Client for Espago API",
   "require": {
     "php": ">=7.0",
     "guzzlehttp/guzzle": "~6.0"
@@ -13,5 +12,8 @@
     "sebastian/phpdcd": "*",
     "symfony/console": "~3.1",
     "phpspec/phpspec": "^3.1"
+  },
+  "autoload": {
+    "psr-4": {"": "src/"}
   }
 }
