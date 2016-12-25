@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Factory;
 
 use Gorky\Espago\Http\HttpCall;
@@ -25,7 +27,7 @@ class HttpCallFactory
      *
      * @return HttpCall
      */
-    public function buildGetCall($url)
+    public function buildGetCall($url): HttpCall
     {
         return new HttpCall(
             $url,
@@ -41,7 +43,7 @@ class HttpCallFactory
      *
      * @return HttpCall
      */
-    public function buildPostCall($url, array $payload = [])
+    public function buildPostCall($url, array $payload = []): HttpCall
     {
         $call = new HttpCall(
             $url,
@@ -63,7 +65,7 @@ class HttpCallFactory
      *
      * @return HttpCall
      */
-    public function buildPostCallAuthorizedWithPublicKey($url, array $payload = [])
+    public function buildPostCallAuthorizedWithPublicKey($url, array $payload = []): HttpCall
     {
         $call = new HttpCall(
             $url,
@@ -85,7 +87,7 @@ class HttpCallFactory
      *
      * @return HttpCall
      */
-    public function buildPutCall($url, array $payload = null)
+    public function buildPutCall($url, array $payload = null): HttpCall
     {
         $call = new HttpCall(
             $url,
@@ -106,7 +108,7 @@ class HttpCallFactory
      *
      * @return HttpCall
      */
-    public function buildDeleteCall($url)
+    public function buildDeleteCall($url): HttpCall
     {
         return new HttpCall(
             $url,

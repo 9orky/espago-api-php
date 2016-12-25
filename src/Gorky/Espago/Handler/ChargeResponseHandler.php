@@ -84,11 +84,11 @@ class ChargeResponseHandler extends AbstractResponseHandler
     /**
      * @param Charge $charge
      *
-     * @return null
+     * @return void
      *
      * @throws PaymentOperationFailedException
      */
-    private function paymentIsProcessedSuccessfullySoFar(Charge $charge)
+    private function paymentIsProcessedSuccessfullySoFar(Charge $charge): void
     {
         if (!in_array($charge->getState(), [Charge::PAYMENT_STATUS_NEW, Charge::PAYMENT_STATUS_EXECUTED])) {
             throw new PaymentOperationFailedException(

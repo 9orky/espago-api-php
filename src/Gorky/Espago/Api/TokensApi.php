@@ -8,6 +8,7 @@ use Gorky\Espago\Exception\Api\BadRequestException;
 use Gorky\Espago\Exception\Api\ServiceUnavailableException;
 use Gorky\Espago\Exception\Call\HttpCallUnsupportedMethodException;
 use Gorky\Espago\Exception\Transport\NetworkConnectionException;
+use Gorky\Espago\Model\Response\CvvToken;
 use Gorky\Espago\Model\Response\Token;
 use Gorky\Espago\Model\UnauthorizedCard;
 
@@ -68,6 +69,17 @@ class TokensApi extends AbstractApi
         );
 
         return $this->responseHandler->handle($apiResponse);
+    }
+
+    public function createCvvToken(): CvvToken
+    {
+        $apiResponse = $this->httpClient->makeCall(
+            $this->httpCallFactory->buildPostCallAuthorizedWithPublicKey(
+                '/api/cvv'
+            )
+        );
+        
+        
     }
 
     /**

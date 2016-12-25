@@ -14,7 +14,7 @@ class TokenResponseHandler extends AbstractResponseHandler
      *
      * @return Token
      */
-    public function handle(HttpResponse $httpResponse)
+    public function handle(HttpResponse $httpResponse): Token
     {
         return new Token($httpResponse->getData()['id']);
     }
