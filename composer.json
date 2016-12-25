@@ -9,9 +9,8 @@
     "phpmd/phpmd": "^2.4",
     "squizlabs/php_codesniffer": "2.*",
     "sebastian/phpcpd": "*",
-    "sebastian/phpdcd": "*",
     "symfony/console": "~3.1",
-    "phpspec/phpspec": "^3.1"
+    "phpspec/phpspec": "~3.1"
   },
   "autoload": {
     "psr-4": {"": "src/"}

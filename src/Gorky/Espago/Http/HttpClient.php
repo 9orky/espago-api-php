@@ -110,7 +110,7 @@ class HttpClient
      *
      * @return ResponseInterface
      */
-    private function get(HttpCall $httpCall)
+    private function get(HttpCall $httpCall): ResponseInterface
     {
         return $this->client->get($this->buildUrl($this->apiUrl, $httpCall->getUrl()), [
             'auth'    => [$httpCall->getHttpAuthUsername(), $httpCall->getHttpAuthPassword()],
@@ -123,7 +123,7 @@ class HttpClient
      *
      * @return ResponseInterface
      */
-    private function post(HttpCall $httpCall)
+    private function post(HttpCall $httpCall): ResponseInterface
     {
         return $this->client->post($this->buildUrl($this->apiUrl, $httpCall->getUrl()), [
             'auth'        => [$httpCall->getHttpAuthUsername(), $httpCall->getHttpAuthPassword()],
@@ -137,7 +137,7 @@ class HttpClient
      *
      * @return ResponseInterface
      */
-    private function put(HttpCall $httpCall)
+    private function put(HttpCall $httpCall): ResponseInterface
     {
         return $this->client->put($this->buildUrl($this->apiUrl, $httpCall->getUrl()), [
             'auth'        => [$httpCall->getHttpAuthUsername(), $httpCall->getHttpAuthPassword()],
@@ -151,7 +151,7 @@ class HttpClient
      *
      * @return ResponseInterface
      */
-    private function delete(HttpCall $httpCall)
+    private function delete(HttpCall $httpCall): ResponseInterface
     {
         return $this->client->delete($this->buildUrl($this->apiUrl, $httpCall->getUrl()), [
             'auth'    => [$httpCall->getHttpAuthUsername(), $httpCall->getHttpAuthPassword()],
@@ -165,7 +165,7 @@ class HttpClient
      *
      * @return string
      */
-    private function buildUrl(string $apiUrl, string $endpointUrl)
+    private function buildUrl(string $apiUrl, string $endpointUrl): string
     {
         return sprintf('%s%s', $apiUrl, $endpointUrl);
     }

@@ -84,7 +84,7 @@ class ChargeResponseHandler extends AbstractResponseHandler
     /**
      * @param Charge $charge
      *
-     * @return null
+     * @return void
      *
      * @throws PaymentOperationFailedException
      */
