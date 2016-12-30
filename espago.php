@@ -24,7 +24,7 @@ try {
     return -1;
 }
 
-$apiProvider = new \Gorky\Espago\ApiProvider(
+$apiProvider = new \Gorky\Espago\Factory\ApiFactory(
     'https://sandbox.espago.com',
     new \Gorky\Espago\Model\ApiCredentials(
         $credentials['app_id'],

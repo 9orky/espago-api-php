@@ -2,19 +2,21 @@
 
 declare(strict_types = 1);
 
-namespace Gorky\Espago;
+namespace Gorky\Espago\Factory;
 
 use Gorky\Espago\Api\ChargesApi;
 use Gorky\Espago\Api\ClientsApi;
+use Gorky\Espago\Api\CvvTokensApi;
 use Gorky\Espago\Api\TokensApi;
 use Gorky\Espago\Factory\HttpCallFactory;
 use Gorky\Espago\Handler\ChargeResponseHandler;
 use Gorky\Espago\Handler\ClientResponseHandler;
+use Gorky\Espago\Handler\CvvTokenResponseHandler;
 use Gorky\Espago\Handler\TokenResponseHandler;
 use Gorky\Espago\Http\HttpClient;
 use Gorky\Espago\Model\ApiCredentials;
 
-class ApiProvider
+class ApiFactory
 {
     /**
      * @var HttpClient
@@ -45,6 +47,18 @@ class ApiProvider
             $this->httpClient,
             $this->httpCallFactory,
             new TokenResponseHandler()
+        );
+    }
+
+    /**
+     * @return CvvTokensApi
+     */
+    public function getCvvTokensApi(): CvvTokensApi
+    {
+        return new CvvTokensApi(
+            $this->httpClient,
+            $this->httpCallFactory,
+            new CvvTokenResponseHandler()
         );
     }
 

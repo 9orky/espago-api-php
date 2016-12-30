@@ -87,7 +87,7 @@ class HttpCall
      *
      * @return self
      */
-    public function setHeader(string $headerName, string $headerValue): self
+    public function setHeader(string $headerName, string $headerValue): HttpCall
     {
         if ('Accept' === $headerName) {
             throw new \InvalidArgumentException('Accept header determines an API version so this is read-only');
@@ -101,6 +101,8 @@ class HttpCall
     /**
      * @param string $headerName
      * @param string $headerValue
+     *
+     * @return void
      *
      * @throws HttpCallHeaderExistsException
      */
@@ -120,7 +122,7 @@ class HttpCall
      *
      * @return self
      */
-    public function setFormData(array $formData = []): self
+    public function setFormData(array $formData = []): HttpCall
     {
         $this->formData = $formData;
 

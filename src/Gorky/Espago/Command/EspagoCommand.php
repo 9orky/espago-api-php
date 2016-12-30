@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gorky\Espago\Command;
 
-use Gorky\Espago\ApiProvider;
+use Gorky\Espago\Factory\ApiFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,24 +18,26 @@ class EspagoCommand extends Command
     protected $io;
 
     /**
-     * @var ApiProvider
+     * @var ApiFactory
      */
-    protected $apiProvider;
+    protected $apiFactory;
 
     /**
      * @param null|string $name
-     * @param ApiProvider $apiProvider
+     * @param ApiFactory $apiFactory
      */
-    public function __construct($name, ApiProvider $apiProvider)
+    public function __construct($name, ApiFactory $apiFactory)
     {
         parent::__construct($name);
 
-        $this->apiProvider = $apiProvider;
+        $this->apiFactory = $apiFactory;
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
+     * @return void
      */
     protected function initiateSymfonyStyle(InputInterface $input, OutputInterface $output)
     {
