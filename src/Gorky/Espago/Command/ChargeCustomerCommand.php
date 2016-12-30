@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gorky\Espago\Command;
 
 use Gorky\Espago\Exception\Api\BadRequestException;
@@ -14,7 +16,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ChargeCustomerCommand extends EspagoCommand
 {
-    protected function configure()
+    /**
+     * @return void
+     */
+    protected function configure(): void
     {
         $this->setDescription('Charge Customer');
 
@@ -36,9 +41,9 @@ class ChargeCustomerCommand extends EspagoCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return null
+     * @return int
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->initiateSymfonyStyle($input, $output);
 
@@ -68,7 +73,7 @@ class ChargeCustomerCommand extends EspagoCommand
      *
      * @throws \RuntimeException
      */
-    private function handleChargeArguments(InputInterface $input)
+    private function handleChargeArguments(InputInterface $input): array
     {
         if ($input->getOption('interactive')) {
             return [
@@ -96,13 +101,13 @@ class ChargeCustomerCommand extends EspagoCommand
      *
      * @return int
      */
-    private function runAuthorizationProcedure(InputInterface $input)
+    private function runAuthorizationProcedure(InputInterface $input): int
     {
         $this->io->section('Create new Authorization Hold');
 
         list($clientId, $amount, $currency, $description) = $this->handleChargeArguments($input);
 
-        $clientsApi = $this->apiProvider->getClientsApi();
+        $clientsApi = $this->apiFactory->getClientsApi();
 
         try {
 
@@ -112,7 +117,7 @@ class ChargeCustomerCommand extends EspagoCommand
 
             $this->io->writeln(sprintf('[*] Client found: %s', $customer->getId()));
 
-            $chargesApi = $this->apiProvider->getChargesApi();
+            $chargesApi = $this->apiFactory->getChargesApi();
 
             $this->io->write("[2/2] Trying to create a new Authorization...\t");
 
@@ -170,13 +175,13 @@ class ChargeCustomerCommand extends EspagoCommand
      *
      * @return int
      */
-    private function runChargeProcedure(InputInterface $input)
+    private function runChargeProcedure(InputInterface $input): int
     {
         $this->io->section('Create new Charge');
 
         list($clientId, $amount, $currency, $description) = $this->handleChargeArguments($input);
 
-        $clientsApi = $this->apiProvider->getClientsApi();
+        $clientsApi = $this->apiFactory->getClientsApi();
 
         try {
             $this->io->write("[1/2] Checking Client ID...\t\t");
@@ -185,7 +190,7 @@ class ChargeCustomerCommand extends EspagoCommand
 
             $this->io->writeln(sprintf('[*] Client found: %s', $customer->getId()));
 
-            $chargesApi = $this->apiProvider->getChargesApi();
+            $chargesApi = $this->apiFactory->getChargesApi();
 
             $this->io->write("[2/2] Trying to create a new Charge...\t");
 
@@ -287,8 +292,10 @@ class ChargeCustomerCommand extends EspagoCommand
      * @param string $amount
      * @param string $currency
      * @param string $state
+     *
+     * @return void
      */
-    private function printChargeSummary($id, $clientId, $amount, $currency, $state)
+    private function printChargeSummary($id, $clientId, $amount, $currency, $state): void
     {
         $headers = [
             'Charge ID', 'Client ID', 'Amount', 'Currency', 'State'
@@ -308,7 +315,7 @@ class ChargeCustomerCommand extends EspagoCommand
      *
      * @throws \RuntimeException
      */
-    private function handleCaptureArguments(InputInterface $input)
+    private function handleCaptureArguments(InputInterface $input): array
     {
         if ($input->getOption('interactive')) {
             return [
@@ -332,13 +339,13 @@ class ChargeCustomerCommand extends EspagoCommand
      *
      * @return int
      */
-    private function runCaptureProcedure(InputInterface $input)
+    private function runCaptureProcedure(InputInterface $input): int
     {
         $this->io->section('Capture Authorization Hold');
 
         list($chargeId, $amount) = $this->handleCaptureArguments($input);
 
-        $chargesApi = $this->apiProvider->getChargesApi();
+        $chargesApi = $this->apiFactory->getChargesApi();
 
         try {
             $this->io->write("[1/2] Checking Authorization Charge ID...\t");
@@ -392,7 +399,7 @@ class ChargeCustomerCommand extends EspagoCommand
      *
      * @return array
      */
-    private function handleCancelArguments(InputInterface $input)
+    private function handleCancelArguments(InputInterface $input): array
     {
         if ($input->getOption('interactive')) {
             return [
@@ -414,13 +421,13 @@ class ChargeCustomerCommand extends EspagoCommand
      *
      * @return int
      */
-    private function runCancelProcedure(InputInterface $input)
+    private function runCancelProcedure(InputInterface $input): int
     {
         $this->io->section('Cancel Charge');
 
         list($chargeId) = $this->handleCancelArguments($input);
 
-        $chargesApi = $this->apiProvider->getChargesApi();
+        $chargesApi = $this->apiFactory->getChargesApi();
 
         try {
             $this->io->write("[1/2] Checking if Charge exists by ID...\t");

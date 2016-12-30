@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gorky\Espago\Command;
 
 use Gorky\Espago\Exception\Api\BadRequestException;
@@ -11,11 +13,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateCustomerCommand extends EspagoCommand
 {
-    protected function configure()
+    /**
+     * @return void
+     */
+    protected function configure(): void
     {
         $this->setDescription('Create Customer');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->initiateSymfonyStyle($input, $output);
@@ -87,7 +98,7 @@ class CreateCustomerCommand extends EspagoCommand
         });
 
         try {
-            $tokensApi = $this->apiProvider->getTokensApi();
+            $tokensApi = $this->apiFactory->getTokensApi();
 
             $unauthorizedCard = $tokensApi->createUnauthorizedCard(
                 $cardNumber,
@@ -106,7 +117,7 @@ class CreateCustomerCommand extends EspagoCommand
 
             $this->io->writeln(sprintf('[*] Token obtained successfully: %s', $token));
 
-            $clientsApi = $this->apiProvider->getClientsApi();
+            $clientsApi = $this->apiFactory->getClientsApi();
 
             $this->io->write("[2/2] Creating new Client using Token... \t\t");
 
@@ -117,19 +128,25 @@ class CreateCustomerCommand extends EspagoCommand
             $this->io->success('Client created successfully');
 
             $this->printCustomerSummaryTable($customer, $customer->getCard());
+
+            return 0;
         } catch (BadRequestException $e) {
             $this->io->error('Bad request to Espago API');
             $this->io->listing($e->getBadRequestErrors());
         } catch (MalformedResponseException $e) {
             $this->io->error('Response from Espago API is malformed. Try again later.');
         }
+
+        return -1;
     }
 
     /**
      * @param Client $client
      * @param Card $card
+     *
+     * @return void
      */
-    private function printCustomerSummaryTable(Client $client, Card $card)
+    private function printCustomerSummaryTable(Client $client, Card $card): void
     {
         $headers = [
             'ID',

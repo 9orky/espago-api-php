@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Exception\Payment;
 
 use Gorky\Espago\Error\PaymentRejectionError;
@@ -26,7 +28,7 @@ class PaymentRejectedException extends EspagoException
     /**
      * @return PaymentRejectionError
      */
-    public function getPaymentRejectionError()
+    public function getPaymentRejectionError(): PaymentRejectionError
     {
         return $this->paymentRejectionError;
     }

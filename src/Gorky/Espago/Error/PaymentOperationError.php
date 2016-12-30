@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Gorky\Espago\Error;
 
 use Gorky\Espago\Exception\Payment\UndefinedPaymentErrorException;
@@ -167,7 +169,7 @@ class PaymentOperationError
      *
      * @return PaymentOperationError
      */
-    public static function create(string $code):PaymentOperationError
+    public static function create(string $code): PaymentOperationError
     {
         return new self($code);
     }
