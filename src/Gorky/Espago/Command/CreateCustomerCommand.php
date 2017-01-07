@@ -98,7 +98,7 @@ class CreateCustomerCommand extends EspagoCommand
         });
 
         try {
-            $tokensApi = $this->apiFactory->getTokensApi();
+            $tokensApi = $this->apiFactory->buildTokensApi();
 
             $unauthorizedCard = $tokensApi->createUnauthorizedCard(
                 $cardNumber,
@@ -117,7 +117,7 @@ class CreateCustomerCommand extends EspagoCommand
 
             $this->io->writeln(sprintf('[*] Token obtained successfully: %s', $token));
 
-            $clientsApi = $this->apiFactory->getClientsApi();
+            $clientsApi = $this->apiFactory->buildClientsApi();
 
             $this->io->write("[2/2] Creating new Client using Token... \t\t");
 

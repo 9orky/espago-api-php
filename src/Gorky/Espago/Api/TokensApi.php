@@ -71,17 +71,6 @@ class TokensApi extends AbstractApi
         return $this->responseHandler->handle($apiResponse);
     }
 
-    public function createCvvToken(): CvvToken
-    {
-        $apiResponse = $this->httpClient->makeCall(
-            $this->httpCallFactory->buildPostCallAuthorizedWithPublicKey(
-                '/api/cvv'
-            )
-        );
-        
-        
-    }
-
     /**
      * @param string $token
      *

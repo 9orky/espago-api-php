@@ -9,11 +9,13 @@ $credentialsFilePath = sprintf('%s/credentials.php', __DIR__);
 
 try {
     if (!is_file($credentialsFilePath)) {
-        throw new Exception(sprintf('Credentials file does not exist at this location: %s', $credentialsFilePath));
+        throw new \RuntimeException(
+            sprintf('Credentials file does not exist at this location: %s', $credentialsFilePath)
+        );
     }
 
-    if (!$credentials = require($credentialsFilePath)) {
-        throw new Exception(
+    if (!$credentials = require('credentials.php')) {
+        throw new \RuntimeException(
             'Credentials file exists but does not contain any data.\
             Please, take a look at configuration instructions for this Dev Console'
         );

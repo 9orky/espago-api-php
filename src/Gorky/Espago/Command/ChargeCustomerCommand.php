@@ -26,8 +26,8 @@ class ChargeCustomerCommand extends EspagoCommand
         $this->setDefinition(new InputDefinition([
             new InputOption('interactive'),
             new InputOption('authorize'),
-            new InputOption('refund'),
             new InputOption('capture'),
+            new InputOption('refund'),
             new InputOption('cancel'),
             new InputOption('clientId', null, InputOption::VALUE_OPTIONAL),
             new InputOption('amount', null, InputOption::VALUE_OPTIONAL),
@@ -48,19 +48,19 @@ class ChargeCustomerCommand extends EspagoCommand
         $this->initiateSymfonyStyle($input, $output);
 
         if ($input->getOption('authorize')) {
+            return $this->runAuthorizationProcedure($input);
+        }
+
+        if ($input->getOption('capture')) {
             return $this->runCaptureProcedure($input);
         }
 
         if ($input->getOption('refund')) {
-            return $this->runCancelProcedure($input);
-        }
-
-        if ($input->getOption('capture')) {
-            return $this->runCancelProcedure($input);
+            return $this->runRefundProcedure($input);
         }
 
         if ($input->getOption('cancel')) {
-            return $this->runAuthorizationProcedure($input);
+            return $this->runCancelProcedure($input);
         }
 
         return $this->runChargeProcedure($input);
@@ -107,7 +107,7 @@ class ChargeCustomerCommand extends EspagoCommand
 
         list($clientId, $amount, $currency, $description) = $this->handleChargeArguments($input);
 
-        $clientsApi = $this->apiFactory->getClientsApi();
+        $clientsApi = $this->apiFactory->buildClientsApi();
 
         try {
 
@@ -117,7 +117,7 @@ class ChargeCustomerCommand extends EspagoCommand
 
             $this->io->writeln(sprintf('[*] Client found: %s', $customer->getId()));
 
-            $chargesApi = $this->apiFactory->getChargesApi();
+            $chargesApi = $this->apiFactory->buildChargesApi();
 
             $this->io->write("[2/2] Trying to create a new Authorization...\t");
 
@@ -181,7 +181,7 @@ class ChargeCustomerCommand extends EspagoCommand
 
         list($clientId, $amount, $currency, $description) = $this->handleChargeArguments($input);
 
-        $clientsApi = $this->apiFactory->getClientsApi();
+        $clientsApi = $this->apiFactory->buildClientsApi();
 
         try {
             $this->io->write("[1/2] Checking Client ID...\t\t");
@@ -190,7 +190,7 @@ class ChargeCustomerCommand extends EspagoCommand
 
             $this->io->writeln(sprintf('[*] Client found: %s', $customer->getId()));
 
-            $chargesApi = $this->apiFactory->getChargesApi();
+            $chargesApi = $this->apiFactory->buildChargesApi();
 
             $this->io->write("[2/2] Trying to create a new Charge...\t");
 
@@ -283,7 +283,7 @@ class ChargeCustomerCommand extends EspagoCommand
             return 'Y' === $answer;
         });
 
-        return $dccDecision;
+        return (bool) $dccDecision;
     }
 
     /**
@@ -345,7 +345,7 @@ class ChargeCustomerCommand extends EspagoCommand
 
         list($chargeId, $amount) = $this->handleCaptureArguments($input);
 
-        $chargesApi = $this->apiFactory->getChargesApi();
+        $chargesApi = $this->apiFactory->buildChargesApi();
 
         try {
             $this->io->write("[1/2] Checking Authorization Charge ID...\t");
@@ -360,6 +360,90 @@ class ChargeCustomerCommand extends EspagoCommand
 
             $this->io->writeln('[*] Done');
             $this->io->success('Capturing authorized funds was successful');
+
+            $this->printChargeSummary(
+                $charge->getId(),
+                $charge->getClientId(),
+                $charge->getAmount(),
+                $charge->getCurrency(),
+                $charge->getState()
+            );
+        } catch (BadRequestException $e) {
+            $this->io->writeln('[ ] Operation Failed');
+            $this->io->error('Bad request to Espago API');
+            $this->io->listing($e->getBadRequestErrors());
+
+            return 1;
+        } catch (ResourceNotFoundException $e) {
+            $this->io->writeln('[ ] Operation Failed');
+            $this->io->error('Client was not found');
+
+            return 1;
+        } catch (PaymentOperationFailedException $e) {
+            $this->io->writeln('[ ] Payment operation failed');
+            $this->io->error($e->getMessage());
+
+            return 1;
+        } catch (PaymentRejectedException $e) {
+            $this->io->writeln('[ ] Payment operation was rejected');
+            $this->io->error($e->getMessage());
+
+            return 1;
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return array
+     */
+    private function handleRefundArguments(InputInterface $input): array
+    {
+        if ($input->getOption('interactive')) {
+            return [
+                $this->io->ask('Charge ID'),
+                $this->io->ask('amount')
+            ];
+        }
+
+        $chargeId = $input->getOption('chargeId');
+        $amount = $input->getOption('amount');
+
+        if (!$chargeId || !$amount) {
+            throw new \RuntimeException('Required arguments are: Charge ID and amount to capture');
+        }
+
+        return [$chargeId, $amount];
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return int
+     */
+    private function runRefundProcedure(InputInterface $input): int
+    {
+        $this->io->section('Refund Charge');
+
+        list($chargeId, $amount) = $this->handleRefundArguments($input);
+
+        $chargesApi = $this->apiFactory->buildChargesApi();
+
+        try {
+            $this->io->write("[1/2] Checking Charge ID...\t");
+
+            $chargesApi->getCharge($chargeId);
+
+            $this->io->writeln(sprintf('[*] Charge was found by ID: %s', $chargeId));
+
+            $this->io->write(sprintf("[2/2] Refunding %.2f...\t\t\t", $amount));
+
+            $charge = $chargesApi->refundCharge($chargeId, $amount);
+
+            $this->io->writeln('[*] Done');
+            $this->io->success('Refund was successful');
 
             $this->printChargeSummary(
                 $charge->getId(),
@@ -427,7 +511,7 @@ class ChargeCustomerCommand extends EspagoCommand
 
         list($chargeId) = $this->handleCancelArguments($input);
 
-        $chargesApi = $this->apiFactory->getChargesApi();
+        $chargesApi = $this->apiFactory->buildChargesApi();
 
         try {
             $this->io->write("[1/2] Checking if Charge exists by ID...\t");

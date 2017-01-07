@@ -41,7 +41,7 @@ class ApiFactory
     /**
      * @return TokensApi
      */
-    public function getTokensApi(): TokensApi
+    public function buildTokensApi(): TokensApi
     {
         return new TokensApi(
             $this->httpClient,
@@ -53,7 +53,7 @@ class ApiFactory
     /**
      * @return CvvTokensApi
      */
-    public function getCvvTokensApi(): CvvTokensApi
+    public function buildCvvTokensApi(): CvvTokensApi
     {
         return new CvvTokensApi(
             $this->httpClient,
@@ -65,7 +65,7 @@ class ApiFactory
     /**
      * @return ClientsApi
      */
-    public function getClientsApi(): ClientsApi
+    public function buildClientsApi(): ClientsApi
     {
         return new ClientsApi(
             $this->httpClient,
@@ -77,7 +77,7 @@ class ApiFactory
     /**
      * @return ChargesApi
      */
-    public function getChargesApi(): ChargesApi
+    public function buildChargesApi(): ChargesApi
     {
         return new ChargesApi(
             $this->httpClient,

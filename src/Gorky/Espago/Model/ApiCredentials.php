@@ -4,6 +4,9 @@ declare(strict_types = 1);
 
 namespace Gorky\Espago\Model;
 
+/**
+ * Todo: Perfect candidate for Immutable class: https://wiki.php.net/rfc/immutability
+ */
 class ApiCredentials
 {
     /**

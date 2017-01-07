@@ -39,7 +39,7 @@ class Charge
     const PAYMENT_STATUS_DCC_DECISION = 'dcc_decision';
 
     /**
-     * Customer resigned from the autorization of payment or left payment [state available if enabled is 3D-Secure,
+     * Customer resigned from the authorization of payment or left payment [state available if enabled is 3D-Secure,
      * DCC and/or MasterPass]. In case of leaving transaction with state "new", "tds_redirected" or "dcc_decision"
      * (no customer action during 1,5 hour) transactions will change state to "resigned".
      */
