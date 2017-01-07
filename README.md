@@ -1,9 +1,9 @@
 # Espago API (PHP) [![Build Status](https://travis-ci.org/9orky/espago-api-php.svg?branch=master)](https://travis-ci.org/9orky/espago-api-php)
 
-Unofficial client of the Espago API written in PHP.
+Unofficial client of the Espago API written in PHP7.
 
 # Installation
-To install via Composer just type:
+To install via Composer just type in your console:
 
 ```bash
 composer require "9orky/espago-api-php"
@@ -11,8 +11,8 @@ composer require "9orky/espago-api-php"
 and you're done!
 
 # Usage
-To avoid a one huge file with all API methods, client was split into smaller 
-functional pieces. The facade APIs are behind is at: __Gorky\Espago\Factory\ApiFactory__
+To avoid one huge file with all API methods, client was split into smaller functional pieces. The facade APIs are behind 
+is at: __Gorky\Espago\Factory\ApiFactory__
 
 ## Bootstrap
 All you need to do is to instantiate an API Factory with:
@@ -20,7 +20,7 @@ All you need to do is to instantiate an API Factory with:
 * apiCredentials - this is an object which resides at __Gorky\Espago\Model\ApiCredentials__ and requires three arguments
 which should be provided to you by Espago: public key, app ID and password.
 
-How does this look in the code?
+How does this look in a code?
 
 ```php
 $apiFactory = new \Gorky\Espago\Factory\ApiFactory(
@@ -30,11 +30,11 @@ $apiFactory = new \Gorky\Espago\Factory\ApiFactory(
 ```
 
 # Conducting a simplest transaction
-Ok, now with our Api Factory handy we can proceed to making our first transaction. What we need is to ask a Customer
-for his credit card details and charge him. 
+Ok, now with our Api Factory handy we can proceed to make our first transaction. What we needed is to ask a Customer
+for his card details and charge him.
 
 ## Obtaining a Token
-First step to achieve this is to generate a special token which will be a card's representation in Espago.
+First step to our simple transaction is to generate a special Token which will be a Card's representation in Espago.
 
 ```php
 $tokensApi = $apiFactory->buildTokensApi();
@@ -71,10 +71,10 @@ Yes, it was actually that easy :-)
 
 ## Remembering the Card in Espago
 At this moment payment transaction is executed and Customer is charged. But wait, he just forgot to buy his wife some flowers
-for their anniversary. Oh no, he must type all these numbers and letters once again. But no worries though, we can actually
-save Customer's card in Espago for us and use it when needed.
+for their anniversary. Oh no, he must type all these numbers and letters once again! But no worries though, we can actually
+save Customer's Card in Espago for us to use it when needed.
 
-To match card with a Customer we need to create a Client. We have do this with a little help of our friend Token.
+To match Card with a Customer we need to create a Client. We have do this with a little help of our friend Token.
 
 ```php
 $tokensApi = $apiFactory->buildTokensApi();
@@ -103,10 +103,12 @@ All you have to do now is to persist a Client's ID and from now on you can charg
 when your Customers are returning ones.
 
 # Fancy
-There is a simple Console Application to play with on your sandbox account! :-) To play with that you have to make 
-some preparations first.
+There is a simple Console Application to play with using your sandbox account! :-) To make it usable we have to make some
+preparations.
 
-1. In a main directory create PHP file called: _credentials.php_:
+## Making credentials file
+In a main directory create PHP file called: _credentials.php_:
+
 ```php
 // credentials.php
 
@@ -117,7 +119,7 @@ return [
 ];
 ```
 
-2. Party time :-)
+## Time to play
 
 Create new Client:
 
